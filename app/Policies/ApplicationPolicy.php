@@ -77,7 +77,16 @@ class ApplicationPolicy
      */
     public function delete(User $user, Application $application): bool
     {
-        return $user->hasRole('admin');
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        //user hanya bisa menghapus aplikasinya jika statusnya masih 'applied'
+        if ($user->hasRole('user')) {
+            return $user->id === $application->user_id
+                && $application->status->value === 'applied';
+        }
+        return false;
     }
 
     /**

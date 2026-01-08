@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ApiResponse;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\Auth\StoreUserRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\SendEmailVerification;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\Auth\StoreUserRequest;
 
 class RegisteredUserController extends Controller
 {
@@ -23,7 +25,7 @@ class RegisteredUserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
-        DB::transaction(function () use ($request) {
+        $user = DB::transaction(function () use ($request) {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -32,12 +34,26 @@ class RegisteredUserController extends Controller
 
             $user->assignRole('user');
 
-            event(new Registered($user));
-
             Auth::login($user);
+
+            return $user;
         });
 
-        $user = Auth::user();
+        // Dispatch job untuk email verifikasi secara asynchronous
+        // Gunakan try-catch untuk memastikan error email tidak mempengaruhi response
+        try {
+            SendEmailVerification::dispatch($user);
+        } catch (\Exception $e) {
+            // Log error tapi tetap lanjutkan registrasi
+            Log::error('Failed to dispatch email verification job', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Tetap fire event untuk kebutuhan lain (logging, analytics, dll)
+        event(new Registered($user));
+
         $token = $user->createToken('API Token')->plainTextToken;
 
         return $this->successResponse(['token' => $token], 'User registered successfully', 201);

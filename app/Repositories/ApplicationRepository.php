@@ -54,4 +54,16 @@ class ApplicationRepository
             ->where('vacancy_id', $vacancyId)
             ->exists();
     }
+
+
+    /**
+     * Count active applications (not rejected) for a user.
+     * User can apply again if they have rejected applications.
+     */
+    public function countActiveByUser(int $userId): int
+    {
+        return Application::where('user_id', $userId)
+            ->where('status', '!=', 'rejected')
+            ->count();
+    }
 }

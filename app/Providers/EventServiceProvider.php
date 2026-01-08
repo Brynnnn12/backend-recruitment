@@ -34,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         ApplicationStatusChanged::class => [
             SendApplicationStatusNotification::class,
         ],
+        // Registered event listener dihapus karena email verifikasi
+        // sekarang menggunakan Job langsung (SendEmailVerification)
+        // untuk menghindari error email mempengaruhi response registrasi
     ];
 
     /**

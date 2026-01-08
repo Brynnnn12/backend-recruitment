@@ -29,6 +29,16 @@ class ApplicationService
 
     public function apply(array $data, User $user): Application
     {
+
+        // User hanya bisa apply maksimal 2 kali di semua lowongan yang statusnya belum rejected
+        // Jika ada aplikasi yang rejected, user bisa apply lagi
+        if ($this->applicationRepository->countActiveByUser($user->id) >= 2) {
+            throw ValidationException::withMessages([
+                'user_id' => ['Anda telah mencapai batas maksimal aplikasi aktif (2). Tunggu aplikasi yang ditolak untuk melamar lagi.'],
+            ]);
+        }
+
+
         $this->validateNotDuplicate($user->id, $data['vacancy_id']);
 
         if (isset($data['cv_file']) && $data['cv_file'] instanceof UploadedFile) {
@@ -108,7 +118,7 @@ class ApplicationService
     {
         if ($this->applicationRepository->existsForUserAndVacancy($userId, $vacancyId)) {
             throw ValidationException::withMessages([
-                'vacancy_id' => ['You have already applied for this vacancy.'],
+                'vacancy_id' => ['Anda sudah pernah melamar lowongan ini.'],
             ]);
         }
     }
@@ -120,7 +130,7 @@ class ApplicationService
     {
         if ($application->status !== ApplicationStatus::APPLIED) {
             throw ValidationException::withMessages([
-                'status' => ['Cannot update CV after application has been reviewed. Current status: ' . $application->status->value],
+                'status' => ['Tidak dapat mengupdate CV setelah aplikasi telah direview. Status saat ini: ' . $application->status->value],
             ]);
         }
     }
