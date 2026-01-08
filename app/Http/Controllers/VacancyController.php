@@ -7,9 +7,7 @@ use App\Http\Requests\UpdateVacancyRequest;
 use App\Http\Resources\VacancyResource;
 use App\Models\Vacancy;
 use App\Services\VacancyService;
-use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class VacancyController extends Controller
 {
@@ -34,9 +32,8 @@ class VacancyController extends Controller
      */
     public function store(StoreVacancyRequest $request): JsonResponse
     {
-
         $data = $request->validated();
-        $data['created_by'] = Auth::id();
+        $data['created_by'] = $request->user()->id;
         $data['status'] = 'open';
 
         $vacancy = $this->vacancyService->createVacancy($data);

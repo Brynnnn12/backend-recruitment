@@ -3,19 +3,14 @@
 namespace App\Services;
 
 use App\Models\Vacancy;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\VacancyRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class VacancyService
 {
-    protected VacancyRepository $vacancyRepository;
 
-    public function __construct(VacancyRepository $vacancyRepository)
-    {
-        $this->vacancyRepository = $vacancyRepository;
-    }
+    public function __construct(protected VacancyRepository $vacancyRepository) {}
 
     public function getAllVacancies(): LengthAwarePaginator
     {
@@ -50,11 +45,5 @@ class VacancyService
     public function getOpenVacancies(): LengthAwarePaginator
     {
         return $this->vacancyRepository->getOpenVacancies();
-    }
-
-    public function canUserManageVacancy(Vacancy $vacancy, int $userId): bool
-    {
-        // Only users with admin or hr role can manage vacancies
-        return Auth::user()->hasRole(['admin', 'hr']);
     }
 }

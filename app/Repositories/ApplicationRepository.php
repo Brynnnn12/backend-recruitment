@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ApplicationRepository
 {
-    // Mengembalikan Builder agar reusable jika ingin chain query lain
     protected function baseQuery(): Builder
     {
         return Application::with(['user', 'vacancy']);
@@ -44,14 +43,13 @@ class ApplicationRepository
     public function getByUser(int $userId, int $perPage = 10): LengthAwarePaginator
     {
         return $this->baseQuery()
-            ->byUser($userId) // Pastikan Scope scopeByUser ada di Model
+            ->byUser($userId)
             ->latest()
             ->paginate($perPage);
     }
 
     public function existsForUserAndVacancy(int $userId, int $vacancyId): bool
     {
-        // Tidak perlu load relation (baseQuery) untuk cek exists, biar ringan
         return Application::where('user_id', $userId)
             ->where('vacancy_id', $vacancyId)
             ->exists();

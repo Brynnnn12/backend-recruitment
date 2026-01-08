@@ -26,4 +26,16 @@ class StoreApplicationRequest extends FormRequest
             'cv_file' => 'required|file|mimes:pdf|max:5120', // 5MB max
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'vacancy_id.required' => 'Vacancy ID is required.',
+            'vacancy_id.exists' => 'The selected vacancy does not exist.',
+            'cv_file.required' => 'CV file is required.',
+            'cv_file.file' => 'CV must be a file.',
+            'cv_file.mimes' => 'CV must be a PDF file.',
+            'cv_file.max' => 'CV file size must not exceed 5MB.',
+        ];
+    }
 }

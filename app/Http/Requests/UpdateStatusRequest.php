@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateApplicationRequest extends FormRequest
+class UpdateStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true; // Assuming authorized users can update
+        return true;
     }
 
     /**
@@ -22,17 +22,15 @@ class UpdateApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cv_file' => ['required', 'file', 'mimes:pdf', 'max:2048'], // max 2MB
+            'status' => 'required|in:applied,reviewed,interview,hired,rejected',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'cv_file.required' => 'CV file is required.',
-            'cv_file.file' => 'CV must be a file.',
-            'cv_file.mimes' => 'CV must be a PDF file.',
-            'cv_file.max' => 'CV file size must not exceed 2MB.',
+            'status.required' => 'Status harus diisi.',
+            'status.in'       => 'Status harus salah satu dari berikut: applied, reviewed, interview, hired, rejected.',
         ];
     }
 }

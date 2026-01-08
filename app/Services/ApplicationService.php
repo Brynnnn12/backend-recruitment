@@ -28,24 +28,15 @@ class ApplicationService
 
     public function apply(array $data, User $user): Application
     {
-        // 1. Validasi Bisnis: Cek Duplikat
-        // Gunakan $user->id (dari parameter), JANGAN Auth::id()
-        if ($this->applicationRepository->existsForUserAndVacancy($user->id, $data['vacancy_id'])) {
-            throw ValidationException::withMessages([
-                'vacancy_id' => ['You have already applied for this vacancy.'],
-            ]);
-        }
+        $this->validateNotDuplicate($user->id, $data['vacancy_id']);
 
-        // 2. Handle Upload
         if (isset($data['cv_file']) && $data['cv_file'] instanceof UploadedFile) {
             $data['cv_file'] = $this->fileService->uploadPdf($data['cv_file']);
         }
 
-        // 3. Prepare Data
-        // Menggabungkan array data dengan data override
         $applicationData = array_merge($data, [
-            'user_id'    => $user->id, // Konsisten pakai $user object
-            'status'     => ApplicationStatus::APPLIED, // Pastikan Enum ini benar (APPLIED/PENDING?)
+            'user_id'    => $user->id,
+            'status'     => ApplicationStatus::APPLIED,
             'applied_at' => now(),
         ]);
 
@@ -54,26 +45,59 @@ class ApplicationService
 
     public function updateStatus(Application $application, ApplicationStatus $status): bool
     {
-        // Clean: Langsung pass ke repo
         return $this->applicationRepository->update($application, [
             'status' => $status
         ]);
     }
 
+    public function updateCv(Application $application, UploadedFile $cvFile): bool
+    {
+        $this->validateCanUpdateCv($application);
+
+        $oldPath = $application->getRawOriginal('cv_file');
+        if ($oldPath) {
+            $this->fileService->delete($oldPath);
+        }
+
+        $newPath = $this->fileService->uploadPdf($cvFile);
+
+        return $this->applicationRepository->update($application, [
+            'cv_file' => $newPath
+        ]);
+    }
+
     public function delete(Application $application): bool
     {
-        // 1. AMBIL PATH ASLI
-        // getRawOriginal('cv_file') mengambil string "cv/namafile.pdf" langsung dari kolom DB.
-        // Ini membypass Accessor yang mengubahnya jadi "http://localhost..."
         $path = $application->getRawOriginal('cv_file');
 
         if ($path) {
-            // 2. HAPUS FILE
-            // Karena $path sudah murni path (bukan URL), kita tidak perlu logic str_replace lagi.
-            // Langsung kirim ke FileUploadService.
             $this->fileService->delete($path);
         }
 
         return $this->applicationRepository->delete($application);
+    }
+
+    /**
+     * Validate user has not applied for this vacancy before.
+     */
+    private function validateNotDuplicate(int $userId, int $vacancyId): void
+    {
+        if ($this->applicationRepository->existsForUserAndVacancy($userId, $vacancyId)) {
+            throw ValidationException::withMessages([
+                'vacancy_id' => ['You have already applied for this vacancy.'],
+            ]);
+        }
+    }
+
+    /**
+     * Validate CV can be updated (only if status is still APPLIED).
+     */
+    private function validateCanUpdateCv(Application $application): void
+    {
+        if ($application->status !== ApplicationStatus::APPLIED) {
+            throw ValidationException::withMessages([
+                'status' => ['Cannot update CV after application has been reviewed. Current status: ' . $application->status->value],
+            ]);
+        }
     }
 }

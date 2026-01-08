@@ -8,11 +8,24 @@ use App\Models\Vacancy;
 class VacancyPolicy
 {
     /**
+     * Perform pre-authorization checks.
+     * Admin always has full access.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasRole('hr');
     }
 
     /**
@@ -20,7 +33,7 @@ class VacancyPolicy
      */
     public function view(User $user, Vacancy $vacancy): bool
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasRole('hr');
     }
 
     /**
@@ -28,8 +41,7 @@ class VacancyPolicy
      */
     public function create(User $user): bool
     {
-        // KUNCI UTAMA: Hanya admin & hr yang boleh create
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasRole('hr');
     }
 
     /**
@@ -37,7 +49,7 @@ class VacancyPolicy
      */
     public function update(User $user, Vacancy $vacancy): bool
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasRole('hr');
     }
 
     /**
@@ -45,6 +57,6 @@ class VacancyPolicy
      */
     public function delete(User $user, Vacancy $vacancy): bool
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasRole('hr');
     }
 }

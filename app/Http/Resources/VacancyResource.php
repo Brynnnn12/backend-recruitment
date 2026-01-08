@@ -21,6 +21,7 @@ class VacancyResource extends JsonResource
             'location' => $this->location,
             'type' => $this->type,
             'status' => $this->status,
+            'created_by' => $this->created_by,
             'creator' => [
                 'id' => $this->creator->id,
                 'name' => $this->creator->name,

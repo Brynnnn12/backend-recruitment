@@ -2,31 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ApplicationStatus;
+
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 use App\Http\Resources\ApplicationResource;
 use App\Models\Application;
 use App\Services\ApplicationService;
-use App\Traits\ApiResponse; // Asumsi kamu punya ini
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
 {
-    use ApiResponse;
 
     public function __construct(
         protected ApplicationService $applicationService
-    ) {
-        // 1. BEST PRACTICE: Aktifkan ini!
-        // Ini otomatis menjalankan policy: viewAny, view, create, update, delete
-        // Syarat: Parameter route harus bernama {application}
-        $this->authorizeResource(Application::class, 'application');
-    }
+    ) {}
 
     public function index(Request $request)
     {
-        // $request->user() lebih disarankan daripada Auth::user() untuk testing
+        $this->authorize('viewAny', Application::class);
+
         $applications = $this->applicationService->list($request->user());
 
         return $this->successResponse(
@@ -37,7 +31,8 @@ class ApplicationController extends Controller
 
     public function store(StoreApplicationRequest $request)
     {
-        // Kirim data yang sudah divalidasi + user object
+        $this->authorize('create', Application::class);
+
         $application = $this->applicationService->apply(
             array_merge($request->validated(), ['cv_file' => $request->file('cv_file')]),
             $request->user()
@@ -52,35 +47,36 @@ class ApplicationController extends Controller
 
     public function show(Application $application)
     {
-        // Load relationship di sini (Eager Loading)
+        $this->authorize('view', $application);
+
         return $this->successResponse(
             new ApplicationResource($application->load(['user', 'vacancy'])),
             'Application details retrieved successfully'
         );
     }
 
-    public function update(UpdateApplicationRequest $request, Application $application)
+    public function updateCv(UpdateApplicationRequest $request, Application $application)
     {
-        // Tidak perlu $this->authorize('update'), sudah dihandle constructor
+        $this->authorize('update', $application);
 
-        $updated = $this->applicationService->updateStatus(
+        $updated = $this->applicationService->updateCv(
             $application,
-            ApplicationStatus::from($request->status)
+            $request->file('cv_file')
         );
 
         if ($updated) {
             return $this->successResponse(
                 new ApplicationResource($application->fresh()),
-                'Application status updated successfully'
+                'Application CV updated successfully'
             );
         }
 
-        return $this->errorResponse('Failed to update application status');
+        return $this->errorResponse('Failed to update application CV');
     }
 
     public function destroy(Application $application)
     {
-        // Tidak perlu $this->authorize('delete'), sudah dihandle constructor
+        $this->authorize('delete', $application);
 
         if ($this->applicationService->delete($application)) {
             return $this->successResponse(

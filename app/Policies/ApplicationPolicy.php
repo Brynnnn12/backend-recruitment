@@ -11,10 +11,11 @@ class ApplicationPolicy
      * INI WAJIB ADA.
      * Method ini jalan duluan sebelum method lain (view, create, dll).
      * Jika admin, langsung lolos (return true).
+     * KECUALI untuk create() - admin tidak boleh apply job
      */
     public function before($user, $ability)
     {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') && $ability !== 'create') {
             return true;
         }
     }
@@ -33,7 +34,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $application): bool
     {
-        if ($user->hasAnyRole(['admin', 'hr'])) {
+        if ($user->hasRole('hr')) {
             return true;
         }
 
@@ -50,12 +51,24 @@ class ApplicationPolicy
     }
 
     /**
-     * Update application (status)
-     * - Admin & HR
+     * Update application CV
+     * - User: hanya CV miliknya sendiri
+     * - Admin & HR: tidak bisa update CV (hanya user yang bisa)
      */
     public function update(User $user, Application $application): bool
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        // Hanya user pemilik application yang bisa update CV
+        return $user->id === $application->user_id;
+    }
+
+    /**
+     * Update status application
+     * - Admin & HR: bisa update status
+     * - User: tidak bisa update status
+     */
+    public function updateStatus(User $user, Application $application): bool
+    {
+        return $user->hasRole(['admin', 'hr']);
     }
 
     /**
