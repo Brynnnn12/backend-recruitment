@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Application;
 use App\Enums\ApplicationStatus;
+use App\Events\ApplicationStatusChanged;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\ApplicationRepository;
@@ -45,9 +46,32 @@ class ApplicationService
 
     public function updateStatus(Application $application, ApplicationStatus $status): bool
     {
-        return $this->applicationRepository->update($application, [
+        // Capture old status before update
+        $oldStatus = $application->status->value;
+
+        // Update status
+        $updated = $this->applicationRepository->update($application, [
             'status' => $status
         ]);
+
+        // Fire event if update successful
+        if ($updated) {
+            $application->refresh(); // Reload to get updated data
+
+            event(new ApplicationStatusChanged(
+                $application,
+                $oldStatus,
+                $status->value
+            ));
+
+            Log::info('Application status updated and event fired', [
+                'application_id' => $application->id,
+                'old_status' => $oldStatus,
+                'new_status' => $status->value,
+            ]);
+        }
+
+        return $updated;
     }
 
     public function updateCv(Application $application, UploadedFile $cvFile): bool
