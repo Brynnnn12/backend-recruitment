@@ -9,6 +9,12 @@ use App\Models\Vacancy;
 use App\Services\VacancyService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Lowongan
+ *
+ * API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+ * Semua pengguna dapat melihat daftar lowongan yang tersedia.
+ */
 class VacancyController extends Controller
 {
 
@@ -18,7 +24,28 @@ class VacancyController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Tampilkan daftar semua lowongan
+     * 
+     * Endpoint ini mengembalikan daftar semua lowongan pekerjaan yang tersedia.
+     * Dapat diakses oleh semua pengguna yang terautentikasi.
+     * 
+     * @response 200 {
+     *  "status": true,
+     *  "message": "Lowongan berhasil diambil",
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Senior Backend Developer",
+     *      "description": "Kami mencari backend developer berpengalaman...",
+     *      "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+     *      "status": "open",
+     *      "created_by": {
+     *        "id": 1,
+     *        "name": "Admin HR"
+     *      }
+     *    }
+     *  ]
+     * }
      */
     public function index(): JsonResponse
     {
@@ -28,7 +55,42 @@ class VacancyController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Buat lowongan pekerjaan baru
+     * 
+     * Endpoint ini digunakan untuk membuat lowongan pekerjaan baru.
+     * Hanya dapat diakses oleh Admin dan HR.
+     * 
+     * @bodyParam title string required Judul lowongan. Example: Senior Backend Developer
+     * @bodyParam description string required Deskripsi lowongan. Example: Kami mencari backend developer yang berpengalaman...
+     * @bodyParam requirements string required Persyaratan lowongan. Example: Minimal 3 tahun pengalaman dengan PHP/Laravel
+     * 
+     * @response 201 {
+     *  "status": true,
+     *  "message": "Lowongan berhasil dibuat",
+     *  "data": {
+     *    "id": 1,
+     * Tampilkan detail lowongan
+     * 
+     * Endpoint ini mengembalikan detail lengkap dari satu lowongan pekerjaan.
+     * 
+     * @urlParam vacancy integer required ID lowongan. Example: 1
+     * 
+     * @response 200 {
+     *  "status": true,
+     *  "message": "Lowongan berhasil diambil",
+     *  "data": {
+     *    "id": 1,
+     *    "title": "Senior Backend Developer",
+     *    "description": "Kami mencari backend developer berpengalaman...",
+     *    "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+     *    "status": "open"
+     *  }
+     * }eloper",
+     *    "description": "Kami mencari backend developer berpengalaman...",
+     *    "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+     *    "status": "open"
+     *  }
+     * }
      */
     public function store(StoreVacancyRequest $request): JsonResponse
     {
@@ -51,7 +113,26 @@ class VacancyController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Perbarui lowongan pekerjaan
+     * 
+     * Endpoint ini digunakan untuk memperbarui data lowongan pekerjaan.
+     * Hanya dapat diakses oleh Admin dan HR.
+     * 
+     * @urlParam vacancy integer required ID lowongan. Example: 1
+     * @bodyParam title string Judul lowongan. Example: Senior Backend Developer
+     * @bodyParam description string Deskripsi lowongan. Example: Kami mencari backend developer yang berpengalaman...
+     * @bodyParam requirements string Persyaratan lowongan. Example: Minimal 3 tahun pengalaman dengan PHP/Laravel
+     * @bodyParam status string Status lowongan. Example: open
+     * 
+     * @response 200 {
+     *  "status": true,
+     *  "message": "Lowongan berhasil diperbarui",
+     *  "data": {
+     *    "id": 1,
+     *    "title": "Senior Backend Developer",
+     *    "status": "open"
+     *  }
+     * }
      */
     public function update(UpdateVacancyRequest $request, Vacancy $vacancy): JsonResponse
     {

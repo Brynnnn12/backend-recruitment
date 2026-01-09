@@ -9,25 +9,25 @@ use function Knuckles\Scribe\Config\{removeStrategies, configureStrategy};
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => 'Recruitment System API Documentation',
+    'title' => 'Dokumentasi API Sistem Rekrutmen',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => 'Complete API documentation for the Recruitment Management System. Manage vacancies, job applications, and user roles with ease.',
+    'description' => 'Dokumentasi lengkap API untuk Sistem Manajemen Rekrutmen. Kelola lowongan pekerjaan, lamaran kerja, dan peran pengguna dengan mudah.',
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<INTRO
-        Welcome to the Recruitment System API documentation.
+        Selamat datang di dokumentasi API Sistem Rekrutmen.
 
-        This API allows you to manage job vacancies, handle job applications with CV uploads, and control user access with role-based permissions.
+        API ini memungkinkan Anda untuk mengelola lowongan pekerjaan, menangani lamaran kerja dengan upload CV, dan mengontrol akses pengguna dengan sistem berbasis peran.
 
-        **Key Features:**
-        - 🔐 Authentication with Laravel Sanctum
-        - 👥 Role-based access control (Admin, HR, User)
-        - 📄 Vacancy management
-        - 📎 Application management with CV file uploads
-        - ✅ Application status tracking
+        **Fitur Utama:**
+        - 🔐 Autentikasi dengan Laravel Sanctum
+        - 👥 Kontrol akses berbasis peran (Admin, HR, User)
+        - 📄 Manajemen lowongan pekerjaan
+        - 📎 Manajemen lamaran dengan upload file CV
+        - ✅ Pelacakan status lamaran
 
-        <aside>Use the code examples on the right to integrate with the API in different programming languages.</aside>
+        <aside>Gunakan contoh kode di sebelah kanan untuk mengintegrasikan API dalam berbagai bahasa pemrograman.</aside>
     INTRO,
 
     // The base URL displayed in the docs.
@@ -129,10 +129,10 @@ return [
 
         // Placeholder your users will see for the auth parameter in the example requests.
         // Set this to null if you want Scribe to use a random value as placeholder instead.
-        'placeholder' => '{YOUR_AUTH_TOKEN}',
+        'placeholder' => '{TOKEN_AUTENTIKASI_ANDA}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by logging in via <code>POST /api/login</code> endpoint. The token will be valid for your session.',
+        'extra_info' => 'Anda dapat mengambil token dengan login melalui endpoint <code>POST /api/login</code>. Token akan berlaku selama sesi Anda.',
     ],
 
     // Example requests for each endpoint will be shown in each of these languages.
@@ -188,10 +188,10 @@ return [
         // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and https://scribe.knuckles.wtf/laravel/reference/config#order for details
         // Note: does not work for `external` docs types
         'order' => [
-            'Authentication',
-            'Vacancies',
-            'Applications',
-            'Users',
+            'Autentikasi',
+            'Lowongan',
+            'Lamaran',
+            'Pengguna',
         ],
     ],
 
@@ -210,7 +210,7 @@ return [
     // The format you pass to `date` will be passed to PHP's `date()` function.
     // The format you pass to `git` can be either "short" or "long".
     // Note: does not work for `external` docs types
-    'last_updated' => 'Last updated: {date:F j, Y}',
+    'last_updated' => 'Terakhir diperbarui: {date:j F Y}',
 
     'examples' => [
         // Set this to any number to generate the same example values for parameters on each run,
@@ -248,7 +248,7 @@ return [
         'responses' => configureStrategy(
             Defaults::RESPONSES_STRATEGIES,
             Strategies\Responses\ResponseCalls::withSettings(
-                only: ['GET *'],
+                only: [],  // Disable response calls to avoid database errors
                 // Recommended: disable debug mode in response calls to avoid error stack traces in responses
                 config: [
                     'app.debug' => false,
@@ -263,7 +263,7 @@ return [
     // For response calls, API resource responses and transformer responses,
     // Scribe will try to start database transactions, so no changes are persisted to your database.
     // Tell Scribe which connections should be transacted here. If you only use one db connection, you can leave this as is.
-    'database_connections_to_transact' => [config('database.default')],
+    'database_connections_to_transact' => [],
 
     'fractal' => [
         // If you are using a custom serializer with league/fractal, you can specify it here.

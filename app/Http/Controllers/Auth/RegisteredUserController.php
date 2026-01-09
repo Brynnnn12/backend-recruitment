@@ -14,14 +14,36 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Auth\StoreUserRequest;
 
+/**
+ * @group Autentikasi
+ *
+ * API untuk registrasi pengguna baru.
+ */
 class RegisteredUserController extends Controller
 {
     use ApiResponse;
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Registrasi pengguna baru
+     * 
+     * Endpoint ini digunakan untuk mendaftarkan pengguna baru ke sistem.
+     * Setelah registrasi berhasil, token autentikasi akan dikembalikan.
+     * Email verifikasi akan dikirim secara otomatis.
+     * 
+     * @bodyParam name string required Nama lengkap pengguna. Example: John Doe
+     * @bodyParam email string required Alamat email pengguna. Example: john@example.com
+     * @bodyParam password string required Password minimal 8 karakter. Example: password123
+     * @bodyParam password_confirmation string required Konfirmasi password. Example: password123
+     * 
+     * @response 201 {
+     *  "status": true,
+     *  "message": "Pengguna berhasil didaftarkan",
+     *  "data": {
+     *    "token": "1|abcdefghijklmnopqrstuvwxyz"
+     *  }
+     * }
+     * 
+     * @unauthenticated
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
@@ -39,8 +61,7 @@ class RegisteredUserController extends Controller
             return $user;
         });
 
-        // Dispatch job untuk email verifikasi secara asynchronous
-        // Gunakan try-catch untuk memastikan error email tidak mempengaruhi response
+
         try {
             SendEmailVerification::dispatch($user);
         } catch (\Exception $e) {

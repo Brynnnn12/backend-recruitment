@@ -1,0 +1,491 @@
+name: Lamaran
+description: |-
+
+  API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+  Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/applications
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: |-
+
+        API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+        Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Tampilkan daftar lamaran'
+      description: |-
+        Endpoint ini mengembalikan daftar lamaran berdasarkan peran pengguna:
+        - User: hanya melihat lamaran mereka sendiri
+        - Admin/HR: melihat semua lamaran
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Lamaran berhasil diambil",
+           "data": [
+             {
+               "id": 1,
+               "vacancy": {
+                 "id": 1,
+                 "title": "Senior Backend Developer"
+               },
+               "status": "pending",
+               "cv_path": "storage/cvs/example.pdf",
+               "applied_at": "2026-01-09T10:00:00.000000Z"
+             }
+           ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/applications
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: |-
+
+        API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+        Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Buat lamaran baru'
+      description: |-
+        Endpoint ini digunakan untuk melamar ke lowongan pekerjaan.
+        File CV akan diupload dan diproses secara asynchronous.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      vacancy_id:
+        custom: []
+        name: vacancy_id
+        description: 'ID lowongan yang dilamar.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      cv_file:
+        custom: []
+        name: cv_file
+        description: 'File CV dalam format PDF (maksimal 2MB).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      vacancy_id: 1
+    fileParameters:
+      cv_file: null
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+           "status": true,
+           "message": "Lamaran berhasil dikirim",
+           "data": {
+             "id": 1,
+             "vacancy_id": 1,
+             "status": "pending",
+             "cv_path": "storage/cvs/example.pdf"
+           }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/applications/{id}'
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: |-
+
+        API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+        Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Tampilkan detail lamaran'
+      description: |-
+        Endpoint ini mengembalikan detail lengkap dari satu lamaran.
+        User hanya dapat melihat lamaran mereka sendiri.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the application.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      application:
+        custom: []
+        name: application
+        description: 'ID lamaran.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+      application: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Detail lamaran berhasil diambil",
+           "data": {
+             "id": 1,
+             "user": {
+               "id": 1,
+               "name": "John Doe",
+               "email": "john@example.com"
+             },
+             "vacancy": {
+               "id": 1,
+               "title": "Senior Backend Developer"
+             },
+             "status": "pending",
+             "cv_path": "storage/cvs/example.pdf"
+           }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/applications/{id}'
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: |-
+
+        API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+        Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Hapus lamaran'
+      description: |-
+        Endpoint ini digunakan untuk menghapus lamaran.
+        User hanya dapat menghapus lamaran mereka sendiri.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the application.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      application:
+        custom: []
+        name: application
+        description: 'ID lamaran.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+      application: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Lamaran berhasil dihapus",
+           "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/applications/{application_id}/update-cv'
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: |-
+
+        API untuk mengelola lamaran pekerjaan. Pengguna dapat melamar ke lowongan dan melihat status lamaran mereka.
+        Admin dan HR dapat melihat semua lamaran dan mengubah statusnya.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Perbarui CV lamaran'
+      description: |-
+        Endpoint ini digunakan untuk memperbarui file CV dari lamaran yang sudah ada.
+        User hanya dapat memperbarui lamaran mereka sendiri.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      application_id:
+        custom: []
+        name: application_id
+        description: 'The ID of the application.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      application:
+        custom: []
+        name: application
+        description: 'ID lamaran.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      application_id: 1
+      application: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cv_file:
+        custom: []
+        name: cv_file
+        description: 'File CV baru dalam format PDF (maksimal 2MB).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters: []
+    fileParameters:
+      cv_file: null
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "CV lamaran berhasil diperbarui",
+           "data": {
+             "id": 1,
+             "cv_path": "storage/cvs/example_updated.pdf"
+           }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/applications/{application_id}/status'
+    metadata:
+      custom: []
+      groupName: Lamaran
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Perbarui status lamaran'
+      description: |-
+        Endpoint ini digunakan untuk mengubah status lamaran pekerjaan.
+        Hanya dapat diakses oleh Admin dan HR.
+        Status yang tersedia: pending, reviewed, shortlisted, interview, rejected, accepted
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      application_id:
+        custom: []
+        name: application_id
+        description: 'The ID of the application.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      application:
+        custom: []
+        name: application
+        description: 'ID lamaran.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      application_id: 1
+      application: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: 'Status baru lamaran.'
+        required: true
+        example: reviewed
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      status: reviewed
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Status lamaran berhasil diperbarui",
+           "data": {
+             "id": 1,
+             "status": "reviewed",
+             "updated_at": "2026-01-09T10:00:00.000000Z"
+           }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

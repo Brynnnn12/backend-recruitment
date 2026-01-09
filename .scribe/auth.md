@@ -1,7 +1,7 @@
 # Authenticating requests
 
-To authenticate requests, include an **`Authorization`** header with the value **`"Bearer {YOUR_AUTH_TOKEN}"`**.
+To authenticate requests, include an **`Authorization`** header with the value **`"Bearer {TOKEN_AUTENTIKASI_ANDA}"`**.
 
 All authenticated endpoints are marked with a `requires authentication` badge in the documentation below.
 
-You can retrieve your token by logging in via <code>POST /api/login</code> endpoint. The token will be valid for your session.
+Anda dapat mengambil token dengan login melalui endpoint <code>POST /api/login</code>. Token akan berlaku selama sesi Anda.

@@ -1,0 +1,495 @@
+name: Lowongan
+description: |-
+
+  API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+  Semua pengguna dapat melihat daftar lowongan yang tersedia.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/vacancies
+    metadata:
+      custom: []
+      groupName: Lowongan
+      groupDescription: |-
+
+        API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+        Semua pengguna dapat melihat daftar lowongan yang tersedia.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Tampilkan daftar semua lowongan'
+      description: |-
+        Endpoint ini mengembalikan daftar semua lowongan pekerjaan yang tersedia.
+        Dapat diakses oleh semua pengguna yang terautentikasi.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Lowongan berhasil diambil",
+           "data": [
+             {
+               "id": 1,
+               "title": "Senior Backend Developer",
+               "description": "Kami mencari backend developer berpengalaman...",
+               "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+               "status": "open",
+               "created_by": {
+                 "id": 1,
+                 "name": "Admin HR"
+               }
+             }
+           ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/vacancies
+    metadata:
+      custom: []
+      groupName: Lowongan
+      groupDescription: |-
+
+        API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+        Semua pengguna dapat melihat daftar lowongan yang tersedia.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Buat lowongan pekerjaan baru'
+      description: |-
+        Endpoint ini digunakan untuk membuat lowongan pekerjaan baru.
+        Hanya dapat diakses oleh Admin dan HR.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      vacancy:
+        custom: []
+        name: vacancy
+        description: 'ID lowongan.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      vacancy: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Judul lowongan.'
+        required: true
+        example: 'Senior Backend Developer'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Deskripsi lowongan.'
+        required: true
+        example: 'Kami mencari backend developer yang berpengalaman...'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      location:
+        custom: []
+        name: location
+        description: 'Must not be greater than 100 characters.'
+        required: true
+        example: v
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: ''
+        required: true
+        example: part-time
+        type: string
+        enumValues:
+          - full-time
+          - part-time
+          - contract
+          - internship
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      requirements:
+        custom: []
+        name: requirements
+        description: 'Persyaratan lowongan.'
+        required: true
+        example: 'Minimal 3 tahun pengalaman dengan PHP/Laravel'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: 'Senior Backend Developer'
+      description: 'Kami mencari backend developer yang berpengalaman...'
+      location: v
+      type: part-time
+      requirements: 'Minimal 3 tahun pengalaman dengan PHP/Laravel'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Lowongan berhasil diambil",
+           "data": {
+             "id": 1,
+             "title": "Senior Backend Developer",
+             "description": "Kami mencari backend developer berpengalaman...",
+             "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+             "status": "open"
+           }
+          }eloper",
+             "description": "Kami mencari backend developer berpengalaman...",
+             "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
+             "status": "open"
+           }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+           "status": true,
+           "message": "Lowongan berhasil dibuat",
+           "data": {
+             "id": 1,
+          Tampilkan detail lowongan
+
+          Endpoint ini mengembalikan detail lengkap dari satu lowongan pekerjaan.
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/vacancies/{id}'
+    metadata:
+      custom: []
+      groupName: Lowongan
+      groupDescription: |-
+
+        API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+        Semua pengguna dapat melihat daftar lowongan yang tersedia.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display the specified resource.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the vacancy.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/vacancies/{id}'
+    metadata:
+      custom: []
+      groupName: Lowongan
+      groupDescription: |-
+
+        API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+        Semua pengguna dapat melihat daftar lowongan yang tersedia.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Perbarui lowongan pekerjaan'
+      description: |-
+        Endpoint ini digunakan untuk memperbarui data lowongan pekerjaan.
+        Hanya dapat diakses oleh Admin dan HR.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the vacancy.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      vacancy:
+        custom: []
+        name: vacancy
+        description: 'ID lowongan.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+      vacancy: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Judul lowongan.'
+        required: false
+        example: 'Senior Backend Developer'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Deskripsi lowongan.'
+        required: false
+        example: 'Kami mencari backend developer yang berpengalaman...'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      location:
+        custom: []
+        name: location
+        description: 'Must not be greater than 100 characters.'
+        required: false
+        example: v
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: ''
+        required: false
+        example: part-time
+        type: string
+        enumValues:
+          - full-time
+          - part-time
+          - contract
+          - internship
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'Status lowongan.'
+        required: false
+        example: open
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      requirements:
+        custom: []
+        name: requirements
+        description: 'Persyaratan lowongan.'
+        required: false
+        example: 'Minimal 3 tahun pengalaman dengan PHP/Laravel'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: 'Senior Backend Developer'
+      description: 'Kami mencari backend developer yang berpengalaman...'
+      location: v
+      type: part-time
+      status: open
+      requirements: 'Minimal 3 tahun pengalaman dengan PHP/Laravel'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "Lowongan berhasil diperbarui",
+           "data": {
+             "id": 1,
+             "title": "Senior Backend Developer",
+             "status": "open"
+           }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/vacancies/{id}'
+    metadata:
+      custom: []
+      groupName: Lowongan
+      groupDescription: |-
+
+        API untuk mengelola lowongan pekerjaan. Admin dan HR dapat membuat, mengubah, dan menghapus lowongan.
+        Semua pengguna dapat melihat daftar lowongan yang tersedia.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified resource from storage.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {TOKEN_AUTENTIKASI_ANDA}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the vacancy.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
