@@ -26,18 +26,23 @@ class RoleSeeder extends Seeder
         // Define users with their roles
         $users = [
             [
-                'name' => 'Malik',
-                'email' => 'hr@gmail.com',
+                'name' => 'Admin User',
+                'email' => 'admin@gmail.com',
                 'role' => 'admin',
             ],
             [
-                'name' => 'bryann',
-                'email' => 'bryn@gmail.com',
+                'name' => 'HR User',
+                'email' => 'hr@gmail.com',
                 'role' => 'hr',
+            ],
+            [
+                'name' => 'Regular User',
+                'email' => 'user@gmail.com',
+                'role' => 'user',
             ],
         ];
 
-        // Create users and assign roles
+        //ini buat user sesuai role di atas
         foreach ($users as $userData) {
             $user = User::create([
                 'name' => $userData['name'],

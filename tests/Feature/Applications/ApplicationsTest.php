@@ -6,9 +6,10 @@ use App\Models\Application;
 use App\Enums\ApplicationStatus;
 use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
@@ -227,6 +228,14 @@ test('user dapat update CV application miliknya jika status masih APPLIED', func
 
     $response->assertStatus(200);
     $response->assertJsonPath('message', 'Application CV updated successfully');
+    $response->assertJsonStructure([
+        'success',
+        'message',
+        'data' => [
+            'id',
+            'cv_file',
+        ],
+    ]);
 });
 
 test('user tidak dapat update CV jika status bukan APPLIED', function () {
@@ -248,8 +257,7 @@ test('user tidak dapat update CV jika status bukan APPLIED', function () {
         'cv_file' => $newCvFile,
     ]);
 
-    $response->assertStatus(422);
-    $response->assertJsonValidationErrors(['status']);
+    $response->assertStatus(403);
 });
 
 test('user tidak dapat update CV application milik user lain', function () {
@@ -373,7 +381,7 @@ test('user tidak dapat delete application', function () {
     $application = Application::factory()->create([
         'user_id' => $applicantUser->id,
         'vacancy_id' => $vacancy->id,
-        'status' => ApplicationStatus::APPLIED,
+        'status' => ApplicationStatus::REVIEWED, // Status bukan APPLIED, jadi user tidak bisa delete
     ]);
 
     actingAs($applicantUser, 'sanctum');

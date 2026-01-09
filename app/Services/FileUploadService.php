@@ -20,18 +20,32 @@ class FileUploadService
      */
     public function upload(UploadedFile $file, ?string $directory = null): string
     {
-        $this->validateSize($file);
+        try {
+            $this->validateSize($file);
 
-        $directory = $directory ?? self::DEFAULT_DIR;
-        $filename  = $this->generateFileName($file);
+            $directory = $directory ?? self::DEFAULT_DIR;
+            $filename  = $this->generateFileName($file);
 
-        $path = $file->storeAs($directory, $filename, self::DISK);
+            $path = $file->storeAs($directory, $filename, self::DISK);
 
-        if (!$path) {
-            throw new Exception('Gagal mengupload file.');
+            if (!$path) {
+                throw new Exception('Gagal mengupload file.');
+            }
+
+            Log::info('File uploaded successfully', [
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+            ]);
+
+            return $path;
+        } catch (Exception $e) {
+            Log::error('Failed to upload file', [
+                'original_name' => $file->getClientOriginalName(),
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
         }
-
-        return $path;
     }
 
     /**
@@ -60,11 +74,21 @@ class FileUploadService
             $path = ltrim($path, '/');
 
             if (Storage::disk(self::DISK)->exists($path)) {
-                return Storage::disk(self::DISK)->delete($path);
+                $deleted = Storage::disk(self::DISK)->delete($path);
+
+                if ($deleted) {
+                    Log::info('File deleted successfully', ['path' => $path]);
+                }
+
+                return $deleted;
             }
 
             return true; // Anggap sukses jika file memang tidak ada
         } catch (Exception $e) {
+            Log::error('Failed to delete file', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
             return false;
         }
     }

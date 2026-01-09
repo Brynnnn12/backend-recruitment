@@ -37,14 +37,26 @@ class SendApplicationStatusNotification
     {
         // Only send email for final statuses
         if ($this->shouldSendEmail($event->newStatus)) {
-            Log::info('Dispatching email job for application status change', [
+            Log::info('Email notification triggered for status change', [
                 'application_id' => $event->application->id,
+                'user_email' => $event->application->user->email ?? 'unknown',
                 'old_status' => $event->oldStatus,
                 'new_status' => $event->newStatus,
+                'timestamp' => now()->toDateTimeString(),
             ]);
 
-            //ini mengirim job ke queue
+            // Dispatch job to queue
             SendApplicationStatusEmail::dispatch($event->application);
+
+            Log::info('Email job dispatched to queue', [
+                'application_id' => $event->application->id,
+                'new_status' => $event->newStatus,
+            ]);
+        } else {
+            Log::debug('Email not sent - status does not require notification', [
+                'application_id' => $event->application->id,
+                'new_status' => $event->newStatus,
+            ]);
         }
     }
 

@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Mail\ApplicationStatusMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -22,9 +23,9 @@ use Illuminate\Support\Facades\Log;
  * 1. Event fired → Listener catches → Dispatch this job
  * 2. Queue worker picks up job
  * 3. Email sent via Mail facade
- * 4. If failed, retry up to 3 times
+ * 4. If failed, retry up to 2 times
  */
-class SendApplicationStatusEmail implements ShouldQueue
+class SendApplicationStatusEmail implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,7 +34,7 @@ class SendApplicationStatusEmail implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 3;
+    public $tries = 2;
 
     /**
      * The number of seconds the job can run before timing out.
@@ -48,6 +49,24 @@ class SendApplicationStatusEmail implements ShouldQueue
      * @var int
      */
     public $backoff = 10;
+
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 60;
+
+    /**
+     * The unique ID of the job.
+     * Prevents duplicate jobs for the same application status change.
+     *
+     * @return string
+     */
+    public function uniqueId(): string
+    {
+        return 'send-email-' . $this->application->id . '-' . $this->application->status->value;
+    }
 
     /**
      * Create a new job instance.

@@ -59,19 +59,15 @@ class ApplicationController extends Controller
     {
         $this->authorize('update', $application);
 
-        $updated = $this->applicationService->updateCv(
+        $updatedApplication = $this->applicationService->updateCv(
             $application,
             $request->file('cv_file')
         );
 
-        if ($updated) {
-            return $this->successResponse(
-                new ApplicationResource($application->fresh()),
-                'Application CV updated successfully'
-            );
-        }
-
-        return $this->errorResponse('Failed to update application CV');
+        return $this->successResponse(
+            new ApplicationResource($updatedApplication),
+            'Application CV updated successfully'
+        );
     }
 
     public function destroy(Application $application)

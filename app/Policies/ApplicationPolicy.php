@@ -70,6 +70,7 @@ class ApplicationPolicy
      * Update status application
      * - Admin & HR: bisa update status
      * - User: tidak bisa update status
+     * - Business rule (final status check) handled in service layer
      */
     public function updateStatus(User $user, Application $application): bool
     {
