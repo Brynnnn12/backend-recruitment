@@ -83,9 +83,9 @@ class ApplicationStatusMail extends Mailable
     private function getSubjectByStatus(): string
     {
         return match ($this->application->status) {
-            ApplicationStatus::HIRED => '🎉 Congratulations! You Have Been Hired',
-            ApplicationStatus::REJECTED => 'Application Status Update',
-            default => 'Your Application Status Has Changed'
+            ApplicationStatus::HIRED => '🎉 Selamat! Kamu Telah Diterima',
+            ApplicationStatus::REJECTED => 'Pemberitahuan Status Aplikasi',
+            default => 'Status Aplikasi Anda Telah Berubah'
         };
     }
 
@@ -97,11 +97,11 @@ class ApplicationStatusMail extends Mailable
     private function getStatusLabel(): string
     {
         return match ($this->application->status) {
-            ApplicationStatus::APPLIED => 'Application Submitted',
-            ApplicationStatus::REVIEWED => 'Under Review',
-            ApplicationStatus::INTERVIEW => 'Interview Stage',
-            ApplicationStatus::HIRED => 'Hired',
-            ApplicationStatus::REJECTED => 'Not Selected',
+            ApplicationStatus::APPLIED => 'Aplikasi Diajukan',
+            ApplicationStatus::REVIEWED => 'Sedang Ditinjau',
+            ApplicationStatus::INTERVIEW => 'Tahap Wawancara',
+            ApplicationStatus::HIRED => 'Diterima',
+            ApplicationStatus::REJECTED => 'Tidak Terpilih',
             default => ucfirst($this->application->status->value)
         };
     }

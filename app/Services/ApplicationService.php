@@ -30,8 +30,6 @@ class ApplicationService
     public function apply(array $data, User $user): Application
     {
 
-        // User hanya bisa apply maksimal 2 kali di semua lowongan yang statusnya belum rejected
-        // Jika ada aplikasi yang rejected, user bisa apply lagi
         if ($this->applicationRepository->countActiveByUser($user->id) >= 2) {
             throw ValidationException::withMessages([
                 'user_id' => ['Anda telah mencapai batas maksimal aplikasi aktif (2). Tunggu aplikasi yang ditolak untuk melamar lagi.'],
@@ -56,17 +54,17 @@ class ApplicationService
 
     public function updateStatus(Application $application, ApplicationStatus $status): bool
     {
-        // Capture old status before update
+
         $oldStatus = $application->status->value;
 
-        // Update status
+
         $updated = $this->applicationRepository->update($application, [
             'status' => $status
         ]);
 
-        // Fire event if update successful
+
         if ($updated) {
-            $application->refresh(); // Reload to get updated data
+            $application->refresh();
 
             event(new ApplicationStatusChanged(
                 $application,

@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ApplicationRepository
 {
+
+    public function __construct(protected Application $application) {}
+
     protected function baseQuery(): Builder
     {
-        return Application::with(['user', 'vacancy']);
+        return $this->application->with(['user', 'vacancy']);
     }
 
     public function getAll(int $perPage = 10): LengthAwarePaginator
@@ -27,7 +30,7 @@ class ApplicationRepository
 
     public function create(array $data): Application
     {
-        return Application::create($data);
+        return $this->application->create($data);
     }
 
     public function update(Application $application, array $data): bool
@@ -50,19 +53,19 @@ class ApplicationRepository
 
     public function existsForUserAndVacancy(int $userId, int $vacancyId): bool
     {
-        return Application::where('user_id', $userId)
+        return $this->application->where('user_id', $userId)
             ->where('vacancy_id', $vacancyId)
             ->exists();
     }
 
 
     /**
-     * Count active applications (not rejected) for a user.
-     * User can apply again if they have rejected applications.
+     * Menghitung jumlah aplikasi aktif oleh user tertentu.
+     * Aplikasi aktif adalah aplikasi yang statusnya bukan 'rejected'.
      */
     public function countActiveByUser(int $userId): int
     {
-        return Application::where('user_id', $userId)
+        return $this->application->where('user_id', $userId)
             ->where('status', '!=', 'rejected')
             ->count();
     }

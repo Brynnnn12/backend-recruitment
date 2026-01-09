@@ -85,7 +85,7 @@ class SendApplicationStatusEmail implements ShouldQueue
                 'attempt' => $this->attempts(),
             ]);
 
-            // Re-throw to trigger retry
+
             throw $e;
         }
     }

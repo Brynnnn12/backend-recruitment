@@ -33,7 +33,7 @@ Schedule::job(new AutoRejectStaleApplications())
 
 // Optional: You can add more scheduled tasks here
 // Example: Clean old logs weekly
-// Schedule::command('logs:clean')->weekly()->sundays()->at('02:00');
+Schedule::command('logs:clean')->weekly()->sundays()->at('02:00');
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());

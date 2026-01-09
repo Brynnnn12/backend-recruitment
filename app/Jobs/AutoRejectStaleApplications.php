@@ -110,7 +110,7 @@ class AutoRejectStaleApplications implements ShouldQueue
 
                 $rejectedCount++;
 
-                Log::info('Application auto-rejected', [
+                Log::info('Aplikasi otomatis ditolak', [
                     'application_id' => $application->id,
                     'user_id' => $application->user_id,
                     'vacancy_id' => $application->vacancy_id,
@@ -120,7 +120,7 @@ class AutoRejectStaleApplications implements ShouldQueue
             } catch (\Exception $e) {
                 $failedCount++;
 
-                Log::error('Failed to auto-reject application', [
+                Log::error('Gagal otomatis menolak aplikasi', [
                     'application_id' => $application->id,
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
@@ -128,7 +128,7 @@ class AutoRejectStaleApplications implements ShouldQueue
             }
         }
 
-        Log::info('Auto-reject job completed', [
+        Log::info('Otomatis menolak aplikasi selesai', [
             'total_found' => $staleApplications->count(),
             'successfully_rejected' => $rejectedCount,
             'failed' => $failedCount,
@@ -143,7 +143,7 @@ class AutoRejectStaleApplications implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::critical('Auto-reject job failed completely', [
+        Log::critical('Otomatis menolak aplikasi gagal total', [
             'error' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ]);

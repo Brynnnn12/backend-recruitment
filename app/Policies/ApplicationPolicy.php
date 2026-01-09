@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\ApplicationStatus;
 use App\Models\Application;
 use App\Models\User;
 
@@ -57,8 +58,12 @@ class ApplicationPolicy
      */
     public function update(User $user, Application $application): bool
     {
-        // Hanya user pemilik application yang bisa update CV
-        return $user->id === $application->user_id;
+
+        if ($user->hasRole('user')) {
+            return $user->id === $application->user_id
+                && $application->status === ApplicationStatus::APPLIED;
+        }
+        return false;
     }
 
     /**
@@ -81,10 +86,10 @@ class ApplicationPolicy
             return true;
         }
 
-        //user hanya bisa menghapus aplikasinya jika statusnya masih 'applied'
+
         if ($user->hasRole('user')) {
             return $user->id === $application->user_id
-                && $application->status->value === 'applied';
+                && $application->status === ApplicationStatus::APPLIED;
         }
         return false;
     }

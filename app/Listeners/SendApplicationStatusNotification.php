@@ -43,7 +43,7 @@ class SendApplicationStatusNotification
                 'new_status' => $event->newStatus,
             ]);
 
-            // Dispatch job to queue for async processing
+            //ini mengirim job ke queue
             SendApplicationStatusEmail::dispatch($event->application);
         }
     }
