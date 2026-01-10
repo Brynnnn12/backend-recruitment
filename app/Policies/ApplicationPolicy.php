@@ -9,42 +9,35 @@ use App\Models\User;
 class ApplicationPolicy
 {
     /**
-     * INI WAJIB ADA.
-     * Method ini jalan duluan sebelum method lain (view, create, dll).
-     * Jika admin, langsung lolos (return true).
-     * KECUALI untuk create() - admin tidak boleh apply job
+     * Admin has full access except for creating applications.
      */
-    public function before($user, $ability)
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->hasRole('admin') && $ability !== 'create') {
             return true;
         }
+
+        return null;
     }
 
-    // ... method viewAny, view, dll biarkan seperti logic bisnis biasa
+    /**
+     * Anyone with hr or user role can view applications list.
+     */
     public function viewAny(User $user): bool
     {
-        // Admin sudah lolos di atas, jadi di sini cukup cek HR & User
         return $user->hasRole(['hr', 'user']);
     }
 
     /**
-     * View specific application
-     * - Admin & HR: semua
-     * - User: hanya miliknya
+     * Users can view their own applications, HR can view all.
      */
     public function view(User $user, Application $application): bool
     {
-        if ($user->hasRole('hr')) {
-            return true;
-        }
-
-        return $user->id === $application->user_id;
+        return $user->hasRole('hr') || $user->id === $application->user_id;
     }
 
     /**
-     * Create application (apply job)
-     * - Hanya user (applicant)
+     * Only users can create applications.
      */
     public function create(User $user): bool
     {
@@ -52,34 +45,25 @@ class ApplicationPolicy
     }
 
     /**
-     * Update application CV
-     * - User: hanya CV miliknya sendiri
-     * - Admin & HR: tidak bisa update CV (hanya user yang bisa)
+     * Users can update their own CV only if application status is still APPLIED.
      */
     public function update(User $user, Application $application): bool
     {
-
-        if ($user->hasRole('user')) {
-            return $user->id === $application->user_id
-                && $application->status === ApplicationStatus::APPLIED;
-        }
-        return false;
+        return $user->hasRole('user')
+            && $user->id === $application->user_id
+            && $application->status === ApplicationStatus::APPLIED;
     }
 
     /**
-     * Update status application
-     * - Admin & HR: bisa update status
-     * - User: tidak bisa update status
-     * - Business rule (final status check) handled in service layer
+     * Only admin and HR can update application status.
      */
-    public function updateStatus(User $user, Application $application): bool
+    public function updateStatus(User $user): bool
     {
         return $user->hasRole(['admin', 'hr']);
     }
 
     /**
-     * Delete application
-     * - Admin saja
+     * Admin can delete any application, users can delete their own if still APPLIED.
      */
     public function delete(User $user, Application $application): bool
     {
@@ -87,26 +71,23 @@ class ApplicationPolicy
             return true;
         }
 
-
-        if ($user->hasRole('user')) {
-            return $user->id === $application->user_id
-                && $application->status === ApplicationStatus::APPLIED;
-        }
-        return false;
+        return $user->hasRole('user')
+            && $user->id === $application->user_id
+            && $application->status === ApplicationStatus::APPLIED;
     }
 
     /**
-     * Restore (optional)
+     * Only admin can restore applications.
      */
-    public function restore(User $user, Application $application): bool
+    public function restore(User $user): bool
     {
         return $user->hasRole('admin');
     }
 
     /**
-     * Force delete (optional)
+     * Only admin can force delete applications.
      */
-    public function forceDelete(User $user, Application $application): bool
+    public function forceDelete(User $user): bool
     {
         return $user->hasRole('admin');
     }

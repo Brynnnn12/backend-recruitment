@@ -32,7 +32,6 @@ class ApplicationStatusMail extends Mailable
     public function __construct(
         public Application $application
     ) {
-        // Eager load relationships
         $this->application->load(['user', 'vacancy']);
     }
 

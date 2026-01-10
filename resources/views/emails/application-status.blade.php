@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Status Update</title>
+    <title>Pembaruan Status Lamaran</title>
     <style>
         * {
             margin: 0;
@@ -13,71 +13,75 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333333;
-            background-color: #f4f4f4;
+            font-family: 'Manrope', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1f2933;
+            background-color: #f5f7fa;
             padding: 20px;
         }
 
         .email-container {
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto;
             background-color: #ffffff;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 30px rgba(17, 24, 39, 0.12);
+            border: 1px solid #e5e7eb;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #f59e0b 100%);
             color: #ffffff;
-            padding: 40px 30px;
+            padding: 40px 32px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            margin-bottom: 8px;
         }
 
         .header p {
             font-size: 14px;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .content {
-            padding: 40px 30px;
+            padding: 36px 32px;
         }
 
         .greeting {
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #1a202c;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #0f172a;
         }
 
         .message {
-            font-size: 16px;
-            color: #4a5568;
-            margin-bottom: 20px;
+            font-size: 15px;
+            color: #334155;
+            margin-bottom: 18px;
             line-height: 1.8;
         }
 
         .status-badge {
-            display: inline-block;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            margin: 25px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            margin: 24px 0 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .status-hired {
-            background-color: #10b981;
+            background-color: #0ea5e9;
             color: #ffffff;
         }
 
@@ -86,62 +90,65 @@
             color: #ffffff;
         }
 
+        .status-progress {
+            background-color: #f59e0b;
+            color: #0f172a;
+        }
+
         .job-details {
-            background-color: #f7fafc;
-            border-left: 4px solid #667eea;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #0ea5e9;
             padding: 20px;
-            margin: 25px 0;
-            border-radius: 6px;
+            margin: 24px 0;
+            border-radius: 8px;
         }
 
         .job-details h3 {
-            font-size: 16px;
-            color: #2d3748;
+            font-size: 15px;
+            color: #1f2937;
             margin-bottom: 10px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .job-details p {
             font-size: 14px;
-            color: #4a5568;
-            margin: 5px 0;
+            color: #475569;
+            margin: 6px 0;
         }
 
         .job-details strong {
-            color: #1a202c;
+            color: #0f172a;
         }
 
         .divider {
             border: none;
             border-top: 1px solid #e2e8f0;
-            margin: 30px 0;
+            margin: 28px 0;
         }
 
         .footer {
-            background-color: #f7fafc;
-            padding: 30px;
+            background-color: #f8fafc;
+            padding: 28px;
             text-align: center;
             border-top: 1px solid #e2e8f0;
         }
 
         .footer p {
-            font-size: 14px;
-            color: #718096;
-            margin: 5px 0;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
+            font-size: 13px;
+            color: #6b7280;
+            margin: 6px 0;
         }
 
         .emoji {
-            font-size: 24px;
-            margin-right: 8px;
+            font-size: 20px;
         }
 
-        @media only screen and (max-width: 600px) {
+        @media only screen and (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+
             .email-container {
                 border-radius: 0;
             }
@@ -149,16 +156,16 @@
             .header,
             .content,
             .footer {
-                padding: 25px 20px;
+                padding: 26px 20px;
             }
 
             .header h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .status-badge {
-                font-size: 14px;
-                padding: 10px 20px;
+                font-size: 13px;
+                padding: 10px 16px;
             }
         }
     </style>
@@ -166,110 +173,97 @@
 
 <body>
     <div class="email-container">
-        <!-- Header -->
         <div class="header">
-            <h1>Application Status Update</h1>
-            <p>{{ config('app.name') }} - Recruitment System</p>
+            <h1>Pembaruan Status Lamaran</h1>
+            <p>{{ config('app.name') }} · Sistem Rekrutmen</p>
         </div>
 
-        <!-- Main Content -->
         <div class="content">
             <div class="greeting">
-                Dear {{ $userName }},
+                Halo {{ $userName }},
             </div>
 
             @if ($isHired)
                 <p class="message">
-                    We are <strong>thrilled</strong> to inform you that your application for the position of
-                    <strong>{{ $vacancyTitle }}</strong> has been <strong>successful</strong>!
+                    Selamat! Lamaran Anda untuk posisi <strong>{{ $vacancyTitle }}</strong> dinyatakan
+                    <strong>diterima</strong>.
                 </p>
 
                 <div class="status-badge status-hired">
-                    <span class="emoji">🎉</span> HIRED
+                    <span class="emoji">🎉</span> Diterima
                 </div>
 
                 <p class="message">
-                    Congratulations! We were highly impressed by your qualifications, experience, and
-                    the potential you demonstrated throughout the recruitment process.
+                    Tim kami sangat terkesan dengan pengalaman dan potensi yang Anda tunjukkan sepanjang proses seleksi.
+                    Tim HR akan segera menghubungi Anda untuk jadwal onboarding dan informasi penting lainnya.
                 </p>
 
                 <div class="job-details">
-                    <h3>Position Details</h3>
-                    <p><strong>Job Title:</strong> {{ $vacancyTitle }}</p>
-                    <p><strong>Location:</strong> {{ $vacancyLocation }}</p>
+                    <h3>Detail Posisi</h3>
+                    <p><strong>Posisi:</strong> {{ $vacancyTitle }}</p>
+                    <p><strong>Lokasi:</strong> {{ $vacancyLocation }}</p>
                 </div>
 
                 <p class="message">
-                    Our HR team will contact you shortly with further details regarding your
-                    onboarding process, start date, and other relevant information.
-                </p>
-
-                <p class="message">
-                    We look forward to welcoming you to our team!
+                    Kami tidak sabar menantikan kehadiran Anda di tim.
                 </p>
             @elseif($isRejected)
                 <p class="message">
-                    Thank you for your interest in the position of <strong>{{ $vacancyTitle }}</strong>
-                    and for taking the time to go through our application process.
+                    Terima kasih telah melamar posisi <strong>{{ $vacancyTitle }}</strong> dan meluangkan waktu
+                    mengikuti proses seleksi.
                 </p>
 
                 <div class="status-badge status-rejected">
-                    Application Not Selected
+                    Tidak Lolos Seleksi
                 </div>
 
                 <p class="message">
-                    After careful consideration and review of all applications, we regret to inform you
-                    that we will not be moving forward with your application at this time.
+                    Setelah melalui pertimbangan yang matang, kami belum dapat melanjutkan lamaran Anda saat ini.
+                    Kami menghargai minat dan usaha Anda, dan berharap Anda tetap mempertimbangkan peluang lain di masa
+                    depan.
                 </p>
 
                 <div class="job-details">
-                    <h3>Applied Position</h3>
-                    <p><strong>Job Title:</strong> {{ $vacancyTitle }}</p>
-                    <p><strong>Location:</strong> {{ $vacancyLocation }}</p>
+                    <h3>Posisi yang Dilamar</h3>
+                    <p><strong>Posisi:</strong> {{ $vacancyTitle }}</p>
+                    <p><strong>Lokasi:</strong> {{ $vacancyLocation }}</p>
                 </div>
 
                 <p class="message">
-                    Please know that this decision was not easy, and we genuinely appreciate the time
-                    and effort you invested in your application. We were impressed by your credentials
-                    and encourage you to apply for future opportunities that match your skills and experience.
-                </p>
-
-                <p class="message">
-                    We wish you all the best in your job search and your future career endeavors.
+                    Semoga sukses untuk langkah karier Anda berikutnya.
                 </p>
             @else
                 <p class="message">
-                    Your application status for the position of <strong>{{ $vacancyTitle }}</strong>
-                    has been updated.
+                    Status lamaran Anda untuk posisi <strong>{{ $vacancyTitle }}</strong> telah diperbarui.
                 </p>
 
+                <div class="status-badge status-progress">
+                    Status: {{ $statusLabel }}
+                </div>
+
                 <div class="job-details">
-                    <h3>Application Details</h3>
-                    <p><strong>Job Title:</strong> {{ $vacancyTitle }}</p>
-                    <p><strong>Location:</strong> {{ $vacancyLocation }}</p>
-                    <p><strong>Current Status:</strong> {{ $statusLabel }}</p>
+                    <h3>Detail Lamaran</h3>
+                    <p><strong>Posisi:</strong> {{ $vacancyTitle }}</p>
+                    <p><strong>Lokasi:</strong> {{ $vacancyLocation }}</p>
+                    <p><strong>Status Saat Ini:</strong> {{ $statusLabel }}</p>
                 </div>
 
                 <p class="message">
-                    We will keep you informed as your application progresses through our recruitment process.
+                    Kami akan terus mengabari perkembangan lamaran Anda. Terima kasih atas kesabarannya.
                 </p>
             @endif
 
             <hr class="divider">
 
             <p class="message" style="font-size: 14px;">
-                If you have any questions or need further information, please don't hesitate to contact
-                our HR department.
+                Jika ada pertanyaan, silakan hubungi tim HR kami. Email ini dikirim otomatis, mohon tidak membalas
+                langsung.
             </p>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             <p><strong>{{ config('app.name') }}</strong></p>
-            <p>&copy; {{ date('Y') }} All rights reserved.</p>
-            <p style="margin-top: 15px;">
-                This is an automated message, please do not reply to this email.
-            </p>
+            <p>&copy; {{ date('Y') }} Hak cipta dilindungi.</p>
         </div>
     </div>
 </body>

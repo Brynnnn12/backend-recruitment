@@ -90,7 +90,7 @@ class ApplicationController extends Controller
 
         return $this->successResponse(
             new ApplicationResource($application),
-            'Application submitted successfully',
+            'Berhasil mengirim lamaran',
             201
         );
     }
@@ -128,7 +128,7 @@ class ApplicationController extends Controller
 
         return $this->successResponse(
             new ApplicationResource($application->load(['user', 'vacancy'])),
-            'Application details retrieved successfully'
+            'Detail lamaran berhasil diambil'
         );
     }
 
@@ -161,7 +161,7 @@ class ApplicationController extends Controller
 
         return $this->successResponse(
             new ApplicationResource($updatedApplication),
-            'Application CV updated successfully'
+            'CV lamaran berhasil diperbarui'
         );
     }
 
@@ -186,10 +186,10 @@ class ApplicationController extends Controller
         if ($this->applicationService->delete($application)) {
             return $this->successResponse(
                 null,
-                'Application deleted successfully'
+                'Lamaran berhasil dihapus'
             );
         }
 
-        return $this->errorResponse('Failed to delete application');
+        return $this->errorResponse('Gagal menghapus lamaran');
     }
 }

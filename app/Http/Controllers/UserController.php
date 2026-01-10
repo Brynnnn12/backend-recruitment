@@ -33,6 +33,6 @@ class UserController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        return $this->successResponse($request->user(), 'User retrieved successfully');
+        return $this->successResponse($request->user(), 'User Berhasil Diambil');
     }
 }

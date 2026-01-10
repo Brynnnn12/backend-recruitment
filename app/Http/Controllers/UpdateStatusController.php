@@ -14,7 +14,6 @@ use App\Http\Resources\ApplicationResource;
  */
 class UpdateStatusController extends Controller
 {
-    use ApiResponse;
 
     public function __construct(
         protected ApplicationService $applicationService
@@ -42,7 +41,6 @@ class UpdateStatusController extends Controller
      */
     public function __invoke(UpdateStatusRequest $request, Application $application)
     {
-        // Authorize status update (only admin/hr)
         $this->authorize('updateStatus', $application);
 
         $updated = $this->applicationService->updateStatus(
@@ -53,10 +51,10 @@ class UpdateStatusController extends Controller
         if ($updated) {
             return $this->successResponse(
                 new ApplicationResource($application->fresh()),
-                'Application status updated successfully'
+                'Lamaran Berhasil Diupdate'
             );
         }
 
-        return $this->errorResponse('Failed to update application status');
+        return $this->errorResponse('Gagal Update Status');
     }
 }

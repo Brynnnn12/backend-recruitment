@@ -8,8 +8,7 @@ use App\Models\Vacancy;
 class VacancyPolicy
 {
     /**
-     * Perform pre-authorization checks.
-     * Admin always has full access.
+     * Admin has full access to all vacancy operations.
      */
     public function before(User $user, string $ability): ?bool
     {
@@ -21,7 +20,7 @@ class VacancyPolicy
     }
 
     /**
-     * Determine whether the user can view any models.
+     * HR can view vacancies list.
      */
     public function viewAny(User $user): bool
     {
@@ -29,7 +28,7 @@ class VacancyPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * HR can view any vacancy.
      */
     public function view(User $user, Vacancy $vacancy): bool
     {
@@ -37,7 +36,7 @@ class VacancyPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * HR can create vacancies.
      */
     public function create(User $user): bool
     {
@@ -45,7 +44,7 @@ class VacancyPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * HR can update vacancies.
      */
     public function update(User $user, Vacancy $vacancy): bool
     {
@@ -53,7 +52,7 @@ class VacancyPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * HR can delete vacancies.
      */
     public function delete(User $user, Vacancy $vacancy): bool
     {

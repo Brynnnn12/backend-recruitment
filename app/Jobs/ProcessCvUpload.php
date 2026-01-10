@@ -60,27 +60,8 @@ class ProcessCvUpload implements ShouldQueue
     public function handle(FileUploadService $fileService): void
     {
         try {
-            Log::info('Processing old CV file deletion job', [
-                'application_id' => $this->application->id,
-                'old_cv_path' => $this->oldCvPath,
-            ]);
-
-            // Delete old CV file
             $fileService->delete($this->oldCvPath);
-
-            Log::info('Old CV file deleted successfully', [
-                'application_id' => $this->application->id,
-                'deleted_path' => $this->oldCvPath,
-            ]);
         } catch (\Exception $e) {
-            Log::error('Failed to delete old CV file', [
-                'application_id' => $this->application->id,
-                'old_path' => $this->oldCvPath,
-                'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
-            ]);
-
-            // Re-throw to trigger retry
             throw $e;
         }
     }
@@ -93,12 +74,6 @@ class ProcessCvUpload implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::error('CV upload job failed after all retries', [
-            'application_id' => $this->application->id,
-            'error' => $exception->getMessage(),
-            'total_attempts' => $this->tries,
-        ]);
-
         // Optional: Notify user about failed upload
         // You could dispatch another notification here
     }

@@ -90,21 +90,7 @@ class SendApplicationStatusEmail implements ShouldQueue, ShouldBeUnique
         try {
             Mail::to($this->application->user->email)
                 ->send(new ApplicationStatusMail($this->application));
-
-            Log::info('Application status email sent successfully', [
-                'application_id' => $this->application->id,
-                'user_email' => $this->application->user->email,
-                'status' => $this->application->status->value,
-            ]);
         } catch (\Exception $e) {
-            Log::error('Failed to send application status email', [
-                'application_id' => $this->application->id,
-                'user_email' => $this->application->user->email,
-                'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
-            ]);
-
-
             throw $e;
         }
     }

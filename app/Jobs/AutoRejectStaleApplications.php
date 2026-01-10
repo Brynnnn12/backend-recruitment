@@ -73,19 +73,12 @@ class AutoRejectStaleApplications implements ShouldQueue
     {
         $cutoffDate = Carbon::now()->subDays($this->staleDays);
 
-        Log::info('Starting auto-reject job', [
-            'cutoff_date' => $cutoffDate->toDateTimeString(),
-            'stale_days' => $this->staleDays,
-        ]);
-
-        // Find stale applications
         $staleApplications = Application::where('status', ApplicationStatus::APPLIED)
             ->where('applied_at', '<=', $cutoffDate)
-            ->with(['user', 'vacancy']) // Eager load for event
+            ->with(['user', 'vacancy'])
             ->get();
 
         if ($staleApplications->isEmpty()) {
-            Log::info('No stale applications found');
             return;
         }
 
@@ -96,12 +89,10 @@ class AutoRejectStaleApplications implements ShouldQueue
             try {
                 $oldStatus = $application->status->value;
 
-                // Update status
                 $application->update([
                     'status' => ApplicationStatus::REJECTED,
                 ]);
 
-                // Fire event (will trigger email notification)
                 event(new ApplicationStatusChanged(
                     $application->fresh(),
                     $oldStatus,
@@ -109,30 +100,10 @@ class AutoRejectStaleApplications implements ShouldQueue
                 ));
 
                 $rejectedCount++;
-
-                Log::info('Aplikasi otomatis ditolak', [
-                    'application_id' => $application->id,
-                    'user_id' => $application->user_id,
-                    'vacancy_id' => $application->vacancy_id,
-                    'applied_at' => $application->applied_at->toDateTimeString(),
-                    'days_old' => $application->applied_at->diffInDays(Carbon::now()),
-                ]);
             } catch (\Exception $e) {
                 $failedCount++;
-
-                Log::error('Gagal otomatis menolak aplikasi', [
-                    'application_id' => $application->id,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
             }
         }
-
-        Log::info('Otomatis menolak aplikasi selesai', [
-            'total_found' => $staleApplications->count(),
-            'successfully_rejected' => $rejectedCount,
-            'failed' => $failedCount,
-        ]);
     }
 
     /**
@@ -143,11 +114,6 @@ class AutoRejectStaleApplications implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::critical('Otomatis menolak aplikasi gagal total', [
-            'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString(),
-        ]);
-
         // Optional: Notify admin about critical failure
     }
 }

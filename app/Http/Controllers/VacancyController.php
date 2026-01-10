@@ -51,7 +51,7 @@ class VacancyController extends Controller
     {
 
         $vacancies = $this->vacancyService->getAllVacancies();
-        return $this->successResponse(VacancyResource::collection($vacancies), 'Vacancies retrieved successfully');
+        return $this->successResponse(VacancyResource::collection($vacancies), 'Berhasil Mengambil Lowongan');
     }
 
     /**
@@ -85,11 +85,6 @@ class VacancyController extends Controller
      *    "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
      *    "status": "open"
      *  }
-     * }eloper",
-     *    "description": "Kami mencari backend developer berpengalaman...",
-     *    "requirements": "3+ tahun pengalaman dengan PHP/Laravel",
-     *    "status": "open"
-     *  }
      * }
      */
     public function store(StoreVacancyRequest $request): JsonResponse
@@ -100,7 +95,7 @@ class VacancyController extends Controller
 
         $vacancy = $this->vacancyService->createVacancy($data);
 
-        return $this->successResponse(new VacancyResource($vacancy), 'Vacancy created successfully', 201);
+        return $this->successResponse(new VacancyResource($vacancy), 'Lowongan Berhasil Dibuat', 201);
     }
 
     /**
@@ -109,7 +104,7 @@ class VacancyController extends Controller
     public function show(Vacancy $vacancy): JsonResponse
     {
 
-        return $this->successResponse(new VacancyResource($vacancy), 'Vacancy retrieved successfully');
+        return $this->successResponse(new VacancyResource($vacancy), 'Berhasil Mengambil Detail Lowongan');
     }
 
     /**

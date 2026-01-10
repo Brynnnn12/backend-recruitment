@@ -4,7 +4,6 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\UpdateStatusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';

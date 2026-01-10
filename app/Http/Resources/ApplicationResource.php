@@ -19,20 +19,16 @@ class ApplicationResource extends JsonResource
             'user_id' => $this->user_id,
             'vacancy_id' => $this->vacancy_id,
             'user' => [
-                'id' => $this->user->id,
                 'name' => $this->user->name,
-                'email' => $this->user->email,
             ],
             'vacancy' => [
-                'id' => $this->vacancy->id,
                 'title' => $this->vacancy->title,
                 'location' => $this->vacancy->location,
             ],
-            'cv_file' => $this->cv_file, // URL lengkap via accessor
-            'status' => $this->status->value, // Enum value
+            'cv_file' => $this->cv_file,
+            'status' => $this->status->value,
             'applied_at' => $this->applied_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+
         ];
     }
 }

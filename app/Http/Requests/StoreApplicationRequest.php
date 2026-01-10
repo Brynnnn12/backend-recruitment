@@ -22,20 +22,36 @@ class StoreApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vacancy_id' => 'required|exists:vacancies,id',
-            'cv_file' => 'required|file|mimes:pdf|max:5120', // 5MB max
+            'vacancy_id' => [
+                'required',
+                'integer',
+                'exists:vacancies,id',
+                'min:1'
+            ],
+            'cv_file' => [
+                'required',
+                'file',
+                'mimes:pdf',
+                'mimetypes:application/pdf',
+                'max:5120', // 5MB
+                'extensions:pdf'
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'vacancy_id.required' => 'Vacancy ID is required.',
-            'vacancy_id.exists' => 'The selected vacancy does not exist.',
-            'cv_file.required' => 'CV file is required.',
-            'cv_file.file' => 'CV must be a file.',
-            'cv_file.mimes' => 'CV must be a PDF file.',
-            'cv_file.max' => 'CV file size must not exceed 5MB.',
+            'vacancy_id.required' => 'Lowongan pekerjaan harus diisi.',
+            'vacancy_id.integer' => 'ID lowongan harus berupa angka.',
+            'vacancy_id.exists' => 'Lowongan yang dipilih tidak ditemukan.',
+            'vacancy_id.min' => 'ID lowongan tidak valid.',
+            'cv_file.required' => 'File CV harus diunggah.',
+            'cv_file.file' => 'CV harus berupa file yang valid.',
+            'cv_file.mimes' => 'CV harus berupa file PDF.',
+            'cv_file.mimetypes' => 'Tipe MIME file harus application/pdf.',
+            'cv_file.max' => 'Ukuran file CV maksimal 5MB.',
+            'cv_file.extensions' => 'Ekstensi file harus .pdf',
         ];
     }
 }

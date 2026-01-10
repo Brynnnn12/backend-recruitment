@@ -23,26 +23,18 @@ trait ApiResponse
             'message' => $message,
         ];
 
-        // Jika data adalah API Resource (Single atau Collection)
+
         if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
-            // Ubah resource menjadi array response standar Laravel
-            // resolve() akan otomatis menangani pagination (meta & links) jika ada
+
             $resourceData = $data->response()->getData(true);
 
-            // --- CLEAN CODE TRICK ---
-            // Hapus bagian 'links' di dalam 'meta' yang berisi HTML aneh (&laquo;)
-            // Karena Frontend Next.js biasanya generate UI pagination sendiri
+
             if (isset($resourceData['meta']['links'])) {
                 unset($resourceData['meta']['links']);
             }
-            // ------------------------
 
-            // Gabungkan hasil resource ke response kita
-            // Jika ada pagination, 'data', 'meta', 'links' akan otomatis masuk
             $response = array_merge($response, $resourceData);
-        }
-        // Jika data adalah Paginator murni (tanpa Resource)
-        elseif ($data instanceof LengthAwarePaginator) {
+        } elseif ($data instanceof LengthAwarePaginator) {
             $response['data'] = $data->items();
             $response['meta'] = [
                 'current_page' => $data->currentPage(),
@@ -52,10 +44,7 @@ trait ApiResponse
                 'from' => $data->firstItem(),
                 'to' => $data->lastItem(),
             ];
-            // Kita tidak menyertakan 'links' HTML di sini
-        }
-        // Jika data biasa (Array/Object)
-        else {
+        } else {
             $response['data'] = $data;
         }
 
@@ -77,7 +66,6 @@ trait ApiResponse
             'message' => $message,
         ];
 
-        // Hanya include 'errors' jika ada (untuk validation)
         if ($errors) {
             $response['errors'] = $errors;
         }

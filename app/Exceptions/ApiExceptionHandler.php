@@ -28,10 +28,10 @@ class ApiExceptionHandler
 
     public function handleApiException(Throwable $e)
     {
-        // 1. Error 401 (Unauthenticated / Belum Login) <--- TAMBAHKAN INI
+        // 1. Error 401 (Unauthenticated / Belum Login)
         if ($e instanceof AuthenticationException) {
             return $this->errorResponse(
-                'Unauthenticated.',
+                'Anda belum login atau sesi Anda telah berakhir. Silakan login terlebih dahulu.',
                 401
             );
         }
@@ -39,7 +39,7 @@ class ApiExceptionHandler
         // 2. Error 403 (Access Denied / Salah Role)
         if ($e instanceof AccessDeniedHttpException) {
             return $this->errorResponse(
-                'Anda tidak memiliki akses untuk aksi ini.',
+                'Akses ditolak. Anda tidak memiliki izin untuk melakukan aksi ini.',
                 403
             );
         }
@@ -47,7 +47,7 @@ class ApiExceptionHandler
         // 3. Error 404 (Not Found)
         if ($e instanceof NotFoundHttpException) {
             return $this->errorResponse(
-                'Halaman yang Anda minta tidak ditemukan.',
+                'Resource yang Anda cari tidak ditemukan. Periksa kembali URL atau data yang diminta.',
                 404
             );
         }
@@ -55,14 +55,16 @@ class ApiExceptionHandler
         // 4. Error 422 (Validasi)
         if ($e instanceof ValidationException) {
             return $this->errorResponse(
-                'Validasi gagal.',
+                'Data yang Anda kirimkan tidak valid. Periksa kembali input Anda.',
                 422,
                 $e->errors()
             );
         }
 
         // 5. General Error (500)
-        $message = app()->isLocal() ? $e->getMessage() : 'Terjadi kesalahan pada server.';
+        $message = app()->isLocal()
+            ? $e->getMessage()
+            : 'Terjadi kesalahan pada server. Silakan coba beberapa saat lagi atau hubungi administrator.';
 
         return $this->errorResponse($message, 500);
     }

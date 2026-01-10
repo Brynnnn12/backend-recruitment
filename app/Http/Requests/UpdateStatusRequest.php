@@ -22,15 +22,20 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:applied,reviewed,interview,hired,rejected',
+            'status' => [
+                'required',
+                'string',
+                'in:applied,reviewed,interview,hired,rejected'
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'status.required' => 'Status harus diisi.',
-            'status.in'       => 'Status harus salah satu dari berikut: applied, reviewed, interview, hired, rejected.',
+            'status.required' => 'Status aplikasi harus diisi.',
+            'status.string' => 'Status harus berupa teks.',
+            'status.in' => 'Status harus salah satu dari: applied, reviewed, interview, hired, rejected.',
         ];
     }
 }

@@ -59,19 +59,8 @@ class SendEmailVerification implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info('Processing email verification job', [
-            'user_id' => $this->user->id,
-            'email' => $this->user->email,
-        ]);
-
-        // Kirim email verifikasi jika belum terverifikasi
         if (!$this->user->hasVerifiedEmail()) {
             $this->user->sendEmailVerificationNotification();
-
-            Log::info('Email verification sent', [
-                'user_id' => $this->user->id,
-                'email' => $this->user->email,
-            ]);
         }
     }
 

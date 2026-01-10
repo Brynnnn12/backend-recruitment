@@ -22,17 +22,26 @@ class UpdateApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cv_file' => ['required', 'file', 'mimes:pdf', 'max:2048'], // max 2MB
+            'cv_file' => [
+                'required',
+                'file',
+                'mimes:pdf',
+                'mimetypes:application/pdf',
+                'max:5120', // 5MB - konsisten dengan Store
+                'extensions:pdf'
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'cv_file.required' => 'CV file is required.',
-            'cv_file.file' => 'CV must be a file.',
-            'cv_file.mimes' => 'CV must be a PDF file.',
-            'cv_file.max' => 'CV file size must not exceed 2MB.',
+            'cv_file.required' => 'File CV harus diunggah.',
+            'cv_file.file' => 'CV harus berupa file yang valid.',
+            'cv_file.mimes' => 'CV harus berupa file PDF.',
+            'cv_file.mimetypes' => 'Tipe MIME file harus application/pdf.',
+            'cv_file.max' => 'Ukuran file CV maksimal 5MB.',
+            'cv_file.extensions' => 'Ekstensi file harus .pdf',
         ];
     }
 }
