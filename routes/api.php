@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\UpdateStatusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
@@ -14,4 +15,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('applications', ApplicationController::class);
     Route::post('applications/{application}/update-cv', [ApplicationController::class, 'updateCv']);
     Route::put('applications/{application}/status', UpdateStatusController::class);
+    Route::apiResource('employees', EmployeeController::class)->parameter('employees', 'employee');
 });

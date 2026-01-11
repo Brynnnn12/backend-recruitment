@@ -12,9 +12,20 @@ class VacancyRepository
 
     public function __construct(protected Vacancy $vacancy) {}
 
-    public function getAll(): LengthAwarePaginator
+    public function getAll(?string $search = null, ?string $status = null, ?string $type = null, int $perPage = 10): LengthAwarePaginator
     {
-        return $this->vacancy->with('creator')->paginate(10);
+        return $this->vacancy
+            ->with('creator')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('location', 'like', "%{$search}%");
+                });
+            })
+            ->when($status, fn($query) => $query->where('status', $status))
+            ->when($type, fn($query) => $query->where('type', $type))
+            ->orderByDesc('id')
+            ->paginate(max($perPage, 1));
     }
 
     public function findById(int $id): ?Vacancy

@@ -17,13 +17,17 @@ class ApplicationService
         protected FileUploadService $fileService
     ) {}
 
-    public function list(User $user)
+    public function list(User $user, array $filters = [])
     {
+        $perPage = isset($filters['per_page']) ? (int) $filters['per_page'] : 10;
+        $search = $filters['search'] ?? null;
+        $status = $filters['status'] ?? null;
+
         if ($user->hasRole(['admin', 'hr'])) {
-            return $this->applicationRepository->getAll();
+            return $this->applicationRepository->getAll($search, $status, $perPage);
         }
 
-        return $this->applicationRepository->getByUser($user->id);
+        return $this->applicationRepository->getByUser($user->id, $search, $status, $perPage);
     }
 
     public function apply(array $data, User $user): Application

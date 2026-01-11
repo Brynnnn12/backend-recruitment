@@ -51,7 +51,11 @@ class ApplicationController extends Controller
     {
         $this->authorize('viewAny', Application::class);
 
-        $applications = $this->applicationService->list($request->user());
+        $applications = $this->applicationService->list($request->user(), [
+            'search' => $request->query('search'),
+            'status' => $request->query('status'),
+            'per_page' => min(max((int) $request->query('per_page', 10), 1), 100),
+        ]);
 
         return $this->successResponse(
             ApplicationResource::collection($applications),

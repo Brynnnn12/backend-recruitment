@@ -16,11 +16,18 @@ class ApplicationRepository
         return $this->application->with(['user', 'vacancy']);
     }
 
-    public function getAll(int $perPage = 10): LengthAwarePaginator
+    public function getAll(?string $search = null, ?string $status = null, int $perPage = 10): LengthAwarePaginator
     {
         return $this->baseQuery()
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('user', fn($sub) => $sub->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                        ->orWhereHas('vacancy', fn($sub) => $sub->where('title', 'like', "%{$search}%"));
+                });
+            })
+            ->when($status, fn($query) => $query->where('status', $status))
             ->latest()
-            ->paginate($perPage);
+            ->paginate(max($perPage, 1));
     }
 
     public function findById(int $id): Application
@@ -43,12 +50,18 @@ class ApplicationRepository
         return $application->delete();
     }
 
-    public function getByUser(int $userId, int $perPage = 10): LengthAwarePaginator
+    public function getByUser(int $userId, ?string $search = null, ?string $status = null, int $perPage = 10): LengthAwarePaginator
     {
         return $this->baseQuery()
             ->byUser($userId)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('vacancy', fn($sub) => $sub->where('title', 'like', "%{$search}%"));
+                });
+            })
+            ->when($status, fn($query) => $query->where('status', $status))
             ->latest()
-            ->paginate($perPage);
+            ->paginate(max($perPage, 1));
     }
 
     public function existsForUserAndVacancy(int $userId, int $vacancyId): bool

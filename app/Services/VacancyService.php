@@ -11,9 +11,16 @@ class VacancyService
 {
     public function __construct(protected VacancyRepository $vacancyRepository) {}
 
-    public function getAllVacancies(): LengthAwarePaginator
+    public function getAllVacancies(array $filters = []): LengthAwarePaginator
     {
-        return $this->vacancyRepository->getAll();
+        $perPage = isset($filters['per_page']) ? (int) $filters['per_page'] : 10;
+
+        return $this->vacancyRepository->getAll(
+            $filters['search'] ?? null,
+            $filters['status'] ?? null,
+            $filters['type'] ?? null,
+            $perPage
+        );
     }
 
     public function getVacancyById(int $id): ?Vacancy

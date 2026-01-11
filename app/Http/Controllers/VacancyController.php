@@ -49,8 +49,12 @@ class VacancyController extends Controller
      */
     public function index(): JsonResponse
     {
-
-        $vacancies = $this->vacancyService->getAllVacancies();
+        $vacancies = $this->vacancyService->getAllVacancies([
+            'search' => request('search'),
+            'status' => request('status'),
+            'type' => request('type'),
+            'per_page' => min(max((int) request('per_page', 10), 1), 100),
+        ]);
         return $this->successResponse(VacancyResource::collection($vacancies), 'Berhasil Mengambil Lowongan');
     }
 
