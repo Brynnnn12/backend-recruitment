@@ -1,13 +1,29 @@
 <?php
 
+use Spatie\Permission\Models\Role;
+use function Pest\Laravel\postJson;
+
+beforeEach(function () {
+    Role::create(['name' => 'admin']);
+    Role::create(['name' => 'hr']);
+    Role::create(['name' => 'user']);
+});
+
 test('new users can register', function () {
-    $response = $this->post('/register', [
+
+    $response = postJson('/api/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertNoContent();
+
+
+    $response->assertStatus(201)
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'data' => ['token']
+        ]);
 });

@@ -227,7 +227,7 @@ test('user dapat update CV application miliknya jika status masih APPLIED', func
     ]);
 
     $response->assertStatus(200);
-    $response->assertJsonPath('message', 'Application CV updated successfully');
+    $response->assertJsonPath('message', 'CV lamaran berhasil diperbarui');
     $response->assertJsonStructure([
         'success',
         'message',

@@ -1,35 +1,47 @@
 <?php
 
 use App\Models\User;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\postJson;
 
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
-    $response = $this->post('/login', [
+    $response = postJson('/api/login', [
         'email' => $user->email,
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertNoContent();
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'data' => ['token']
+        ]);
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $response = postJson('/api/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
-    $this->assertGuest();
+    $response->assertStatus(422)
+        ->assertJsonStructure([
+            'message',
+            'errors'
+        ]);
 });
 
-test('users can logout', function () {
+test('users berhak untuk logout', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
-
-    $this->assertGuest();
-    $response->assertNoContent();
+    $response = actingAs($user, 'sanctum')->postJson('/api/logout');
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message'
+        ]);
 });

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::apiResource('vacancies', VacancyController::class);
     Route::apiResource('applications', ApplicationController::class);

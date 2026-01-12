@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use function Pest\Laravel\actingAs;
 
 test('email can be verified', function () {
     $user = User::factory()->unverified()->create();
@@ -16,11 +17,16 @@ test('email can be verified', function () {
         ['id' => $user->id, 'hash' => sha1($user->email)]
     );
 
-    $response = $this->actingAs($user)->get($verificationUrl);
+    // Use API route with token authentication
+    $response = actingAs($user, 'sanctum')->get($verificationUrl);
 
     Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(config('app.frontend_url').'/dashboard?verified=1');
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message'
+        ]);
 });
 
 test('email is not verified with invalid hash', function () {
@@ -32,7 +38,8 @@ test('email is not verified with invalid hash', function () {
         ['id' => $user->id, 'hash' => sha1('wrong-email')]
     );
 
-    $this->actingAs($user)->get($verificationUrl);
+    $response = actingAs($user, 'sanctum')->get($verificationUrl);
 
     expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+    $response->assertStatus(403); // Forbidden for invalid signature
 });

@@ -3,15 +3,21 @@
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
+use function Pest\Laravel\postJson;
 
 test('reset password link can be requested', function () {
     Notification::fake();
 
     $user = User::factory()->create();
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    $response = postJson('/api/forgot-password', ['email' => $user->email]);
 
     Notification::assertSentTo($user, ResetPassword::class);
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'message'
+        ]);
 });
 
 test('password can be reset with valid token', function () {
@@ -19,19 +25,21 @@ test('password can be reset with valid token', function () {
 
     $user = User::factory()->create();
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    postJson('/api/forgot-password', ['email' => $user->email]);
 
     Notification::assertSentTo($user, ResetPassword::class, function (object $notification) use ($user) {
-        $response = $this->post('/reset-password', [
+        $response = postJson('/api/reset-password', [
             'token' => $notification->token,
             'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message'
+            ]);
 
         return true;
     });

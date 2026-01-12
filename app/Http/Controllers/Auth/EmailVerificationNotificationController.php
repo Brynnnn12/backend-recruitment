@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class EmailVerificationNotificationController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Send a new email verification notification.
      */
@@ -18,17 +21,11 @@ class EmailVerificationNotificationController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email already verified'
-            ], 400);
+            return $this->errorResponse('Email already verified', 400);
         }
 
         $user->sendEmailVerificationNotification();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Verification link sent to your email'
-        ]);
+        return $this->successResponse(null, 'Verification link sent to your email');
     }
 }

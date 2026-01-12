@@ -61,7 +61,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        // Delete the current access token if it exists
+        if ($token = $request->user()->currentAccessToken()) {
+            $token->delete();
+        }
 
         return $this->successResponse(null, 'Logout successful');
     }
