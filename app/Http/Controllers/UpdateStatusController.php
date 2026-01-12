@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Traits\ApiResponse;
-use App\Enums\ApplicationStatus;
 use App\Services\ApplicationService;
 use App\Http\Requests\UpdateStatusRequest;
 use App\Http\Resources\ApplicationResource;
@@ -45,7 +44,7 @@ class UpdateStatusController extends Controller
 
         $updated = $this->applicationService->updateStatus(
             $application,
-            ApplicationStatus::from($request->status)
+            $request->status
         );
 
         if ($updated) {

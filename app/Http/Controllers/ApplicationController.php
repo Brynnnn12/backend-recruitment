@@ -88,7 +88,8 @@ class ApplicationController extends Controller
         $this->authorize('create', Application::class);
 
         $application = $this->applicationService->apply(
-            array_merge($request->validated(), ['cv_file' => $request->file('cv_file')]),
+            $request->validated(),
+            $request->file('cv_file'),
             $request->user()
         );
 

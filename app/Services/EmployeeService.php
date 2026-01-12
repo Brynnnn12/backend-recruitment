@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Repositories\EmployeeRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeService
 {
@@ -27,6 +28,10 @@ class EmployeeService
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data) {
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            }
+
             $employee = $this->employeeRepository->create($data);
 
             $employee->syncRoles(['hr']);
@@ -37,6 +42,10 @@ class EmployeeService
 
     public function update(User $employee, array $data): bool
     {
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
         return $this->employeeRepository->update($employee, $data);
     }
 

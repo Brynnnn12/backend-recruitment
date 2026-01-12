@@ -28,8 +28,11 @@ class VacancyService
         return $this->vacancyRepository->findById($id);
     }
 
-    public function createVacancy(array $data): Vacancy
+    public function createVacancy(array $data, int $createdBy): Vacancy
     {
+        $data['created_by'] = $createdBy;
+        $data['status'] = 'open';
+
         $vacancy = $this->vacancyRepository->create($data);
 
         return $vacancy;

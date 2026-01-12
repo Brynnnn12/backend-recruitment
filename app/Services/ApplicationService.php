@@ -30,7 +30,7 @@ class ApplicationService
         return $this->applicationRepository->getByUser($user->id, $search, $status, $perPage);
     }
 
-    public function apply(array $data, User $user): Application
+    public function apply(array $data, UploadedFile $cvFile, User $user): Application
     {
         try {
             if ($this->applicationRepository->countActiveByUser($user->id) >= 2) {
@@ -41,9 +41,7 @@ class ApplicationService
 
             $this->validateNotDuplicate($user->id, $data['vacancy_id']);
 
-            if (isset($data['cv_file']) && $data['cv_file'] instanceof UploadedFile) {
-                $data['cv_file'] = $this->fileService->uploadPdf($data['cv_file']);
-            }
+            $data['cv_file'] = $this->fileService->uploadPdf($cvFile);
 
             $applicationData = array_merge($data, [
                 'user_id'    => $user->id,
@@ -57,9 +55,10 @@ class ApplicationService
         }
     }
 
-    public function updateStatus(Application $application, ApplicationStatus $status): bool
+    public function updateStatus(Application $application, string $status): bool
     {
         try {
+            $statusEnum = ApplicationStatus::from($status);
             $oldStatus = $application->status->value;
 
 
@@ -70,12 +69,12 @@ class ApplicationService
             }
 
 
-            if ($oldStatus === $status->value) {
+            if ($oldStatus === $statusEnum->value) {
                 return true;
             }
 
             $updated = $this->applicationRepository->update($application, [
-                'status' => $status
+                'status' => $statusEnum
             ]);
 
             if ($updated) {
@@ -84,7 +83,7 @@ class ApplicationService
                 event(new ApplicationStatusChanged(
                     $application,
                     $oldStatus,
-                    $status->value
+                    $statusEnum->value
                 ));
             }
 

@@ -35,6 +35,7 @@ class SendApplicationStatusNotification
      */
     public function handle(ApplicationStatusChanged $event): void
     {
+        //jika status baru adalah HIRED atau REJECTED, kirim email
         if ($this->shouldSendEmail($event->newStatus)) {
             SendApplicationStatusEmail::dispatch($event->application);
         }

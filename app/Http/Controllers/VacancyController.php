@@ -93,11 +93,7 @@ class VacancyController extends Controller
      */
     public function store(StoreVacancyRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $data['created_by'] = $request->user()->id;
-        $data['status'] = 'open';
-
-        $vacancy = $this->vacancyService->createVacancy($data);
+        $vacancy = $this->vacancyService->createVacancy($request->validated(), $request->user()->id);
 
         return $this->successResponse(new VacancyResource($vacancy), 'Lowongan Berhasil Dibuat', 201);
     }

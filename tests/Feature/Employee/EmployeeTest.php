@@ -22,7 +22,7 @@ beforeEach(function () {
     Role::create(['name' => 'user']);
 });
 
-function verifiedUserWithRole(string $role): User
+function verifiedUserWithRoleForEmployee(string $role): User
 {
     $user = User::factory()->create([
         'email_verified_at' => Carbon::now(),
@@ -33,8 +33,9 @@ function verifiedUserWithRole(string $role): User
     return $user;
 }
 
+
 test('admin  dapat mengambil daftar karyawan', function () {
-    $adminUser = verifiedUserWithRole('admin');
+    $adminUser = verifiedUserWithRoleForEmployee('admin');
 
     actingAs($adminUser, 'sanctum');
     $response = get('/api/employees');
@@ -47,8 +48,8 @@ test('admin  dapat mengambil daftar karyawan', function () {
 });
 
 test('user dan hr tidak dapat mengambil daftar karyawan', function () {
-    $normalUser = verifiedUserWithRole('user');
-    $hrUser = verifiedUserWithRole('hr');
+    $normalUser = verifiedUserWithRoleForEmployee('user');
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
 
     actingAs($normalUser, 'sanctum');
     $response = get('/api/employees');
@@ -71,8 +72,8 @@ test('user yang nggak punya role tidak dapat mengambil daftar karyawan', functio
 
 
 test('admin dapat melihat detail karyawan', function () {
-    $adminUser = verifiedUserWithRole('admin');
-    $hrUser = verifiedUserWithRole('hr');
+    $adminUser = verifiedUserWithRoleForEmployee('admin');
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
 
     actingAs($adminUser, 'sanctum');
     $response = get("/api/employees/{$hrUser->id}");
@@ -85,9 +86,9 @@ test('admin dapat melihat detail karyawan', function () {
 });
 
 test('user dan hr tidak dapat melihat detail karyawan', function () {
-    $normalUser = verifiedUserWithRole('user');
-    $hrUser1 = verifiedUserWithRole('hr');
-    $hrUser2 = verifiedUserWithRole('hr');
+    $normalUser = verifiedUserWithRoleForEmployee('user');
+    $hrUser1 = verifiedUserWithRoleForEmployee('hr');
+    $hrUser2 = verifiedUserWithRoleForEmployee('hr');
 
     actingAs($normalUser, 'sanctum');
     $response = get("/api/employees/{$hrUser1->id}");
@@ -102,7 +103,7 @@ test('user yang nggak punya role tidak dapat melihat detail karyawan', function 
     $normalUser = User::factory()->create([
         'email_verified_at' => Carbon::now(),
     ]);
-    $hrUser = verifiedUserWithRole('hr');
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
 
     actingAs($normalUser, 'sanctum');
     $response = get("/api/employees/{$hrUser->id}");
@@ -111,13 +112,15 @@ test('user yang nggak punya role tidak dapat melihat detail karyawan', function 
 
 
 test('admin dapat membuat karyawan baru', function () {
-    $adminUser = verifiedUserWithRole('admin');
+    $adminUser = verifiedUserWithRoleForEmployee('admin');
 
     $employeeData = [
         'name' => 'Jane Doe',
         'email' => 'jane.doe@example.com',
         'password' => 'password123',
     ];
+
+
 
     actingAs($adminUser, 'sanctum');
     $response = postJson('/api/employees', $employeeData);
@@ -131,4 +134,107 @@ test('admin dapat membuat karyawan baru', function () {
         'name' => 'Jane Doe',
         'email' => 'jane.doe@example.com',
     ]);
+});
+
+
+test('user dan hr tidak dapat buat user baru', function () {
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
+    $userBiasa = verifiedUserWithRoleForEmployee('user');
+
+    $employeeData = [
+        'name' => 'Jane Doe',
+        'email' => 'jane.doe@example.com',
+        'password' => 'password123',
+    ];
+
+    actingAs($hrUser, 'sanctum');
+    $response = postJson('/api/employees', $employeeData);
+    $response->assertStatus(403);
+    actingAs($userBiasa, 'sanctum');
+    $response = postJson('/api/employees', $employeeData);
+    $response->assertStatus(403);
+});
+
+
+test('admin bisa update user', function () {
+    $adminUser = verifiedUserWithRoleForEmployee('admin');
+
+
+    $employee = User::factory()->create([
+        'name' => 'bryan',
+        'email' => 'kamu@gmail.com',
+        'password' => 'password',
+    ]);
+
+    $employee->assignRole('hr');
+
+    actingAs($adminUser, 'sanctum');
+
+    $response = putJson("/api/employees/{$employee->id}", [
+        'name' => 'lama',
+    ]);
+
+    $response->assertStatus(200);
+    assertDatabaseHas('users', [
+        'id' => $employee->id,
+        'name' => 'lama'
+    ]);
+});
+
+test('user dan hr tidak dapat update user', function () {
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
+    $normalUser = verifiedUserWithRoleForEmployee('user');
+
+    $employee = User::factory()->create([
+        'name' => 'bryan',
+        'email' => 'bryan@example.com',
+        'password' => 'password',
+    ]);
+
+    actingAs($normalUser, 'sanctum');
+    $response = putJson("/api/employees/{$employee->id}", [
+        'name' => 'lama',
+    ]);
+    $response->assertStatus(403);
+    actingAs($hrUser, 'sanctum');
+    $response = putJson("/api/employees/{$employee->id}", [
+        'name' => 'lama',
+    ]);
+    $response->assertStatus(403);
+});
+
+test('admin dapat menghapus karyawan', function () {
+    $adminUser = verifiedUserWithRoleForEmployee('admin');
+
+    $employee = User::factory()->create([
+        'name' => 'bryan',
+        'email' => 'bryan@example.com',
+        'password' => 'password',
+    ]);
+
+    $employee->assignRole('hr');
+
+    actingAs($adminUser, 'sanctum');
+    $response = deleteJson("/api/employees/{$employee->id}");
+    $response->assertStatus(200);
+    assertDatabaseMissing('users', [
+        'id' => $employee->id,
+    ]);
+});
+test('user dan hr tidak dapat menghapus karyawan', function () {
+    $hrUser = verifiedUserWithRoleForEmployee('hr');
+    $normalUser = verifiedUserWithRoleForEmployee('user');
+
+    $employee = User::factory()->create([
+        'name' => 'bryan',
+        'email' => 'bryan@example.com',
+        'password' => 'password',
+    ]);
+
+    actingAs($normalUser, 'sanctum');
+    $response = deleteJson("/api/employees/{$employee->id}");
+    $response->assertStatus(403);
+    actingAs($hrUser, 'sanctum');
+    $response = deleteJson("/api/employees/{$employee->id}");
+    $response->assertStatus(403);
 });

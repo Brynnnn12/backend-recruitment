@@ -30,7 +30,7 @@ class VacancyRepository
 
     public function findById(int $id): ?Vacancy
     {
-        return $this->vacancy->with('creator')->find($id);
+        return $this->vacancy->with('creator')->findOrFail($id);
     }
 
     public function create(array $data): Vacancy

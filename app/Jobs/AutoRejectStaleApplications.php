@@ -78,6 +78,7 @@ class AutoRejectStaleApplications implements ShouldQueue
             ->with(['user', 'vacancy'])
             ->get();
 
+        //jika tidak ada aplikasi yang kedaluwarsa, keluar
         if ($staleApplications->isEmpty()) {
             return;
         }
